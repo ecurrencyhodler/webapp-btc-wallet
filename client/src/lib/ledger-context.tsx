@@ -25,6 +25,7 @@ interface LedgerContextType {
   address: string;
   addresses: string[];
   transactions: Transaction[];
+  deviceName: string;
   connect: () => Promise<void>;
   disconnect: () => void;
   sendBitcoin: (amount: number, to: string) => Promise<string>;
@@ -49,6 +50,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   const [xpub, setXpub] = useState<string>("");
   const [keepAliveInterval, setKeepAliveInterval] = useState<NodeJS.Timeout | null>(null);
   const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
+  const [deviceName, setDeviceName] = useState<string>("Ledger");
 
   useEffect(() => {
     const fetchPrice = async () => {
@@ -77,6 +79,14 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       setStatus('connecting');
       const newTransport = await TransportWebHID.create();
       setTransport(newTransport);
+      
+      // Detect device name from HID device info
+      const hidDevice = (newTransport as any).device;
+      if (hidDevice && hidDevice.productName) {
+        setDeviceName(hidDevice.productName);
+      } else {
+        setDeviceName("Ledger");
+      }
       
       const app = new AppClient(newTransport);
       setAppClient(app);
@@ -187,6 +197,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     setTransactions([]);
     setMasterFingerprint("");
     setXpub("");
+    setDeviceName("Ledger");
     toast({
       title: "Ledger Disconnected",
       description: "Device safely disconnected.",
@@ -361,6 +372,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       address,
       addresses,
       transactions,
+      deviceName,
       connect,
       disconnect,
       sendBitcoin,

@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
-  const { status, disconnect } = useLedger();
+  const { status, disconnect, deviceName } = useLedger();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // If not connected and not on connect page, this would usually redirect, 
@@ -110,7 +110,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div className="mt-auto pt-6 border-t border-border">
               <div className="flex items-center gap-3 px-4 mb-4">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_hsl(142,76%,36%)] animate-pulse" />
-                <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Nano X Connected</span>
+                <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">{deviceName} Connected</span>
               </div>
               <button 
                 onClick={disconnect}

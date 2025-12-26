@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import { ArrowUpRight, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -155,7 +156,7 @@ export default function SendPage() {
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <FormLabel>Network Fee</FormLabel>
+                  <Label>Network Fee</Label>
                   <span className="text-sm font-medium text-primary">{getFeeLabel()}</span>
                 </div>
                 
