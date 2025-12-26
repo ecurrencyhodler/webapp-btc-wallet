@@ -31,6 +31,7 @@ interface LedgerContextType {
   signMessage: (message: string, addressIndex?: number) => Promise<string>;
   refreshBalance: () => Promise<void>;
   verifyAddressOnDevice: () => Promise<void>;
+  generateMoreAddresses: () => Promise<void>;
 }
 
 const LedgerContext = createContext<LedgerContextType | undefined>(undefined);
@@ -297,6 +298,46 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const generateMoreAddresses = async () => {
+    if (!appClient || status !== 'connected') throw new Error("Device not connected");
+    
+    try {
+      const policy = new DefaultWalletPolicy(
+        "wpkh(@0/**)",
+        `[${masterFingerprint}/84'/0'/0']${xpub}`
+      );
+      
+      const startIndex = addresses.length;
+      const newAddresses: string[] = [];
+      
+      for (let i = startIndex; i < startIndex + 5; i++) {
+        const addr = await appClient.getWalletAddress(
+          policy,
+          null,
+          0,
+          i,
+          false
+        );
+        newAddresses.push(addr);
+      }
+      
+      setAddresses(prev => [...prev, ...newAddresses]);
+      
+      toast({
+        title: "Addresses Generated",
+        description: `Generated 5 more addresses (${startIndex + 1}-${startIndex + 5}).`,
+      });
+    } catch (e: any) {
+      console.error("Failed to generate addresses", e);
+      toast({
+        title: "Generation Failed",
+        description: e.message || "Could not generate more addresses.",
+        variant: "destructive",
+      });
+      throw e;
+    }
+  };
+
   return (
     <LedgerContext.Provider value={{
       status,
@@ -310,7 +351,8 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       sendBitcoin,
       signMessage,
       refreshBalance,
-      verifyAddressOnDevice
+      verifyAddressOnDevice,
+      generateMoreAddresses
     }}>
       {children}
     </LedgerContext.Provider>

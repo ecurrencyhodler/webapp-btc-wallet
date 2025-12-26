@@ -6,11 +6,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
-import { Loader2, PenTool, ShieldCheck, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, PenTool, ShieldCheck, CheckCircle2, XCircle, Copy, Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { toast } from "@/hooks/use-toast";
 
 export default function SignPage() {
-  const { signMessage, addresses } = useLedger();
+  const { signMessage, addresses, generateMoreAddresses } = useLedger();
+  const [isGenerating, setIsGenerating] = useState(false);
   const [activeTab, setActiveTab] = useState("message");
   
   // Message State
@@ -97,7 +99,18 @@ export default function SignPage() {
                 <label className="text-sm font-medium">Signing Address</label>
                 <Select 
                   value={selectedAddressIndex.toString()} 
-                  onValueChange={(val) => setSelectedAddressIndex(parseInt(val))}
+                  onValueChange={async (val) => {
+                    if (val === "generate-more") {
+                      setIsGenerating(true);
+                      try {
+                        await generateMoreAddresses();
+                      } finally {
+                        setIsGenerating(false);
+                      }
+                    } else {
+                      setSelectedAddressIndex(parseInt(val));
+                    }
+                  }}
                 >
                   <SelectTrigger className="bg-zinc-950/50 border-zinc-800 font-mono text-sm" data-testid="select-signing-address">
                     <SelectValue />
@@ -113,6 +126,17 @@ export default function SignPage() {
                         {addr}
                       </SelectItem>
                     ))}
+                    <SelectItem 
+                      value="generate-more" 
+                      className="text-center justify-center"
+                      data-testid="button-generate-more-addresses"
+                    >
+                      {isGenerating ? (
+                        <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                      ) : (
+                        <Plus className="h-4 w-4 mx-auto" />
+                      )}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -134,7 +158,24 @@ export default function SignPage() {
                     <CheckCircle2 className="w-4 h-4" /> Signed Successfully
                   </div>
                   <div className="bg-zinc-950 border border-zinc-800 p-4 rounded-lg">
-                    <div className="text-xs text-muted-foreground mb-1">Signature</div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs text-muted-foreground">Signature</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-xs"
+                        onClick={() => {
+                          navigator.clipboard.writeText(messageSignature);
+                          toast({
+                            title: "Copied",
+                            description: "Signature copied to clipboard.",
+                          });
+                        }}
+                        data-testid="button-copy-signature"
+                      >
+                        <Copy className="h-3 w-3 mr-1" /> Copy
+                      </Button>
+                    </div>
                     <code className="text-xs font-mono break-all text-primary block" data-testid="text-message-signature">
                       {messageSignature}
                     </code>
