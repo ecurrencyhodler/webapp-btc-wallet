@@ -47,20 +47,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="md:hidden fixed inset-0 top-16 z-40 bg-background/95 backdrop-blur-sm p-4 animate-in slide-in-from-top-5">
           <nav className="flex flex-col gap-2">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
-                <a 
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors",
-                    location === item.href 
-                      ? "bg-primary/10 text-primary border border-primary/20" 
-                      : "hover:bg-accent text-muted-foreground hover:text-foreground",
-                    status !== 'connected' && "pointer-events-none opacity-50"
-                  )}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.label}
-                </a>
+              <Link 
+                key={item.href} 
+                href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors",
+                  location === item.href 
+                    ? "bg-primary/10 text-primary border border-primary/20" 
+                    : "hover:bg-accent text-muted-foreground hover:text-foreground",
+                  status !== 'connected' && "pointer-events-none opacity-50"
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                {item.label}
               </Link>
             ))}
             {status === 'connected' && (
@@ -86,20 +86,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <nav className="flex flex-col gap-2 flex-1">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
-                <a className={cn(
+              <Link 
+                key={item.href} 
+                href={item.href}
+                className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 group",
                   location === item.href 
                     ? "bg-primary/10 text-primary border border-primary/20 shadow-[0_0_15px_-5px_hsl(36,98%,53%,0.3)]" 
                     : "hover:bg-white/5 text-muted-foreground hover:text-foreground",
                   status !== 'connected' && "pointer-events-none opacity-50"
-                )}>
-                  <item.icon className={cn(
-                    "w-5 h-5 transition-transform group-hover:scale-110",
-                    location === item.href ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
-                  )} />
-                  {item.label}
-                </a>
+                )}
+              >
+                <item.icon className={cn(
+                  "w-5 h-5 transition-transform group-hover:scale-110",
+                  location === item.href ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                )} />
+                {item.label}
               </Link>
             ))}
           </nav>
