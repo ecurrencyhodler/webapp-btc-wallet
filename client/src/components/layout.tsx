@@ -54,7 +54,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     "flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors",
                     location === item.href 
                       ? "bg-primary/10 text-primary border border-primary/20" 
-                      : "hover:bg-accent text-muted-foreground hover:text-foreground"
+                      : "hover:bg-accent text-muted-foreground hover:text-foreground",
+                    status !== 'connected' && "pointer-events-none opacity-50"
                   )}
                 >
                   <item.icon className="w-5 h-5" />
@@ -90,7 +91,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 group",
                   location === item.href 
                     ? "bg-primary/10 text-primary border border-primary/20 shadow-[0_0_15px_-5px_hsl(36,98%,53%,0.3)]" 
-                    : "hover:bg-white/5 text-muted-foreground hover:text-foreground"
+                    : "hover:bg-white/5 text-muted-foreground hover:text-foreground",
+                  status !== 'connected' && "pointer-events-none opacity-50"
                 )}>
                   <item.icon className={cn(
                     "w-5 h-5 transition-transform group-hover:scale-110",
