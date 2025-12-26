@@ -2,7 +2,10 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { toast } from '@/hooks/use-toast';
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import AppBtc from "@ledgerhq/hw-app-btc";
+import { listen } from "@ledgerhq/logs";
 import { Buffer } from 'buffer';
+
+listen((log) => console.log("Ledger:", log));
 
 type LedgerStatus = 'disconnected' | 'connecting' | 'connected' | 'error';
 
@@ -67,9 +70,24 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     try {
       setStatus('connecting');
       const transport = await TransportWebHID.create();
+      
+      // Patch for version mismatch between hw-app-btc@10.13.1 and transport-webhid@6.x
+      // The newer hw-app-btc expects decorateAppAPIMethods which doesn't exist in older transports
+      if (!transport.decorateAppAPIMethods) {
+        (transport as any).decorateAppAPIMethods = function(
+          self: any,
+          methods: string[],
+          scrambleKey: string | Buffer
+        ) {
+          for (const methodName of methods) {
+            (self as any)[methodName] = (self as any)[methodName];
+          }
+        };
+      }
+      
       setTransport(transport);
       
-      const btc = new AppBtc(transport);
+      const btc = new AppBtc({ transport, currency: "bitcoin" });
       
       // Get Native Segwit Address (bech32)
       // Path: 84'/0'/0'/0/0
@@ -168,7 +186,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     });
 
     try {
-      const btc = new AppBtc(transport);
+      const btc = new AppBtc({ transport, currency: "bitcoin" });
       const path = "84'/0'/0'/0/0"; // Same path as address
       const hexMessage = Buffer.from(message).toString('hex');
       
