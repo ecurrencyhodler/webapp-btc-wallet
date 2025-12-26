@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from '@/hooks/use-toast';
+import TransportWebHID from "@ledgerhq/hw-transport-webhid";
+import AppBtc from "@ledgerhq/hw-app-btc";
+import { Buffer } from 'buffer';
 
 type LedgerStatus = 'disconnected' | 'connecting' | 'connected' | 'error';
 
@@ -29,13 +32,14 @@ interface LedgerContextType {
 const LedgerContext = createContext<LedgerContextType | undefined>(undefined);
 
 const MOCK_BTC_PRICE = 96420.50;
-const MOCK_ADDRESS = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh";
 
 export function LedgerProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<LedgerStatus>('disconnected');
-  const [btcBalance, setBtcBalance] = useState(0.42069);
+  const [btcBalance, setBtcBalance] = useState(0);
+  const [address, setAddress] = useState("");
+  const [transport, setTransport] = useState<any>(null);
   
-  // Mock transactions
+  // Mock transactions remain mock for now as we can't easily fetch full history without an indexer API
   const [transactions, setTransactions] = useState<Transaction[]>([
     {
       id: 'tx-1',
@@ -58,26 +62,53 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   const connect = async () => {
     try {
       setStatus('connecting');
-      // Simulate connection delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const transport = await TransportWebHID.create();
+      setTransport(transport);
+      
+      const btc = new AppBtc({ transport, currency: "bitcoin" });
+      
+      // Get Native Segwit Address (bech32)
+      // Path: 84'/0'/0'/0/0
+      const result = await btc.getWalletPublicKey("84'/0'/0'/0/0", {
+        format: "bech32"
+      });
+      
+      setAddress(result.bitcoinAddress);
+      
+      // Set a mock balance for demonstration since we can't query the blockchain directly without an API key
+      // In a real app, we would query an explorer API with the address
+      setBtcBalance(0.42069); 
+
       setStatus('connected');
       toast({
         title: "Ledger Connected",
         description: "Nano X connected successfully.",
         variant: "default",
       });
-    } catch (e) {
+      
+      transport.on("disconnect", () => {
+        disconnect();
+      });
+
+    } catch (e: any) {
+      console.error(e);
       setStatus('error');
       toast({
         title: "Connection Failed",
-        description: "Could not connect to device.",
+        description: e.message || "Could not connect to device.",
         variant: "destructive",
       });
     }
   };
 
   const disconnect = () => {
+    if (transport) {
+      transport.close();
+      setTransport(null);
+    }
     setStatus('disconnected');
+    setAddress("");
+    setBtcBalance(0);
     toast({
       title: "Ledger Disconnected",
       description: "Device safely disconnected.",
@@ -85,10 +116,22 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   };
 
   const sendBitcoin = async (amount: number, to: string) => {
-    if (status !== 'connected') throw new Error("Device not connected");
+    if (!transport || status !== 'connected') throw new Error("Device not connected");
     if (amount > btcBalance) throw new Error("Insufficient funds");
     
-    // Simulate signing on device
+    // In a real implementation, we would:
+    // 1. Fetch UTXOs from an explorer API
+    // 2. Construct the transaction
+    // 3. Use btc.createPaymentTransactionNew to sign inputs
+    // 4. Broadcast via API
+    
+    // For this prototype, we simulate the interaction
+    toast({
+      title: "Confirm on Device",
+      description: "Please review and approve the transaction on your Ledger.",
+    });
+
+    // Simulate delay for user interaction
     await new Promise(resolve => setTimeout(resolve, 3000));
     
     setBtcBalance(prev => prev - amount);
@@ -101,21 +144,51 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       status: 'pending'
     }, ...prev]);
     
-    return "tx_hash_mock_123456789";
+    return "tx_hash_simulated_" + Math.random().toString(36).substring(7);
   };
 
   const signMessage = async (message: string) => {
-    if (status !== 'connected') throw new Error("Device not connected");
-    // Simulate signing delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    return "HC/7...signed_message_mock_signature";
+    if (!transport || status !== 'connected') throw new Error("Device not connected");
+    
+    toast({
+      title: "Confirm on Device",
+      description: "Please review and sign the message on your Ledger.",
+    });
+
+    try {
+      const btc = new AppBtc({ transport, currency: "bitcoin" });
+      const path = "84'/0'/0'/0/0"; // Same path as address
+      const hexMessage = Buffer.from(message).toString('hex');
+      
+      const result = await btc.signMessageNew(path, hexMessage);
+      
+      // Convert v, r, s to base64 signature
+      const v = result['v'];
+      const r = result['r'];
+      const s = result['s'];
+      
+      // This is a simplified representation. A real implementation would verify the signature format needed.
+      return `r:${r}, s:${s}, v:${v}`;
+    } catch (e: any) {
+      console.error("Signing failed", e);
+      throw new Error(e.message || "Signing failed");
+    }
   };
 
+  // Ledger JS SDK doesn't have a direct "signPSBT" method easily exposed in the high-level API for all cases
+  // usually it involves parsing the PSBT and signing inputs individually.
+  // We will keep this simulated for simplicity unless specific PSBT libraries are added.
   const signPsbt = async (psbtBase64: string) => {
     if (status !== 'connected') throw new Error("Device not connected");
+    
+    toast({
+      title: "Confirm on Device",
+      description: "Please review the transaction details.",
+    });
+
     // Simulate signing delay
     await new Promise(resolve => setTimeout(resolve, 2500));
-    return psbtBase64 + "_signed";
+    return psbtBase64 + "_signed_simulated";
   };
 
   const refreshBalance = async () => {
@@ -128,7 +201,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       status,
       btcBalance,
       btcPrice: MOCK_BTC_PRICE,
-      address: MOCK_ADDRESS,
+      address,
       transactions,
       connect,
       disconnect,
