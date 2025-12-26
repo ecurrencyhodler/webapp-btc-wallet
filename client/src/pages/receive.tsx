@@ -1,14 +1,15 @@
 import { useLedger } from "@/lib/ledger-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Shield } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 
 export default function ReceivePage() {
-  const { address } = useLedger();
+  const { address, verifyAddressOnDevice } = useLedger();
   const [copied, setCopied] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(address);
@@ -18,6 +19,16 @@ export default function ReceivePage() {
       description: "Bitcoin address copied to clipboard.",
     });
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleVerify = async () => {
+    setIsVerifying(true);
+    try {
+      await verifyAddressOnDevice();
+    } catch (e) {
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   return (
@@ -55,6 +66,17 @@ export default function ReceivePage() {
             </div>
           </div>
           
+          <Button 
+            onClick={handleVerify}
+            disabled={isVerifying}
+            variant="outline"
+            className="w-full"
+            data-testid="button-verify-address"
+          >
+            <Shield className="w-4 h-4 mr-2" />
+            {isVerifying ? "Verifying..." : "Verify on Device"}
+          </Button>
+
           <div className="text-xs text-center text-yellow-500/80 bg-yellow-500/10 p-3 rounded-lg border border-yellow-500/20 max-w-sm">
             Only send <strong>Bitcoin (BTC)</strong> to this address. Sending any other coins may result in permanent loss.
           </div>

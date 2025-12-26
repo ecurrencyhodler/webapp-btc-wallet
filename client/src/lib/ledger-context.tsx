@@ -30,6 +30,7 @@ interface LedgerContextType {
   signMessage: (message: string) => Promise<string>;
   signPsbt: (psbtBase64: string) => Promise<string>;
   refreshBalance: () => Promise<void>;
+  verifyAddressOnDevice: () => Promise<void>;
 }
 
 const LedgerContext = createContext<LedgerContextType | undefined>(undefined);
@@ -227,6 +228,44 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const verifyAddressOnDevice = async () => {
+    if (!appClient || status !== 'connected') throw new Error("Device not connected");
+    
+    toast({
+      title: "Check Your Ledger",
+      description: "Please verify the address displayed on your device matches.",
+    });
+
+    try {
+      const policy = new DefaultWalletPolicy(
+        "wpkh(@0/**)",
+        `[${masterFingerprint}/84'/0'/0']${xpub}`
+      );
+      
+      await appClient.getWalletAddress(
+        policy,
+        null,
+        0,
+        0,
+        true
+      );
+      
+      toast({
+        title: "Address Verified",
+        description: "The address on your device matches.",
+        variant: "default",
+      });
+    } catch (e: any) {
+      console.error("Verification failed", e);
+      toast({
+        title: "Verification Failed",
+        description: e.message || "Could not verify address on device.",
+        variant: "destructive",
+      });
+      throw e;
+    }
+  };
+
   return (
     <LedgerContext.Provider value={{
       status,
@@ -239,7 +278,8 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       sendBitcoin,
       signMessage,
       signPsbt,
-      refreshBalance
+      refreshBalance,
+      verifyAddressOnDevice
     }}>
       {children}
     </LedgerContext.Provider>
