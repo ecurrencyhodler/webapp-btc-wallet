@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import bitcoinMessage from "bitcoinjs-message";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -103,8 +104,6 @@ export async function registerRoutes(
         return;
       }
       
-      const bitcoinMessage = require('bitcoinjs-message');
-      
       // For Native SegWit addresses (bc1...), we need special handling
       const isSegwit = address.startsWith('bc1') || address.startsWith('tb1');
       
@@ -117,7 +116,7 @@ export async function registerRoutes(
         // For SegWit, try with checkSegwitAlways flag
         if (isSegwit) {
           try {
-            const isValid = bitcoinMessage.verify(message, address, signature, null, true);
+            const isValid = bitcoinMessage.verify(message, address, signature, undefined, true);
             res.json({ valid: isValid });
             return;
           } catch (e2) {
@@ -130,7 +129,7 @@ export async function registerRoutes(
                 for (let flag = 39; flag <= 42; flag++) {
                   try {
                     const adjustedSig = Buffer.concat([Buffer.from([flag]), sigBuffer.slice(1)]);
-                    const isValid = bitcoinMessage.verify(message, address, adjustedSig, null, true);
+                    const isValid = bitcoinMessage.verify(message, address, adjustedSig, undefined, true);
                     if (isValid) {
                       res.json({ valid: true });
                       return;
