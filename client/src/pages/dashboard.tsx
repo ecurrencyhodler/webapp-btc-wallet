@@ -13,7 +13,6 @@ export default function Dashboard() {
     <div className="space-y-8 animate-in fade-in duration-500">
       <header>
         <h1 className="text-3xl font-bold font-display tracking-tight text-white">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Your secure Bitcoin hardware wallet</p>
       </header>
 
       {/* Balance Card */}
