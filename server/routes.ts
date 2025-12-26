@@ -103,20 +103,51 @@ export async function registerRoutes(
         return;
       }
       
-      // For a complete implementation, you would use bitcoinjs-message library
-      // to verify the signature cryptographically. For now, we'll return a 
-      // placeholder that indicates this needs the bitcoinjs-message package.
-      // 
-      // Example with bitcoinjs-message:
-      // const bitcoinMessage = require('bitcoinjs-message');
-      // const isValid = bitcoinMessage.verify(message, address, signature);
+      const bitcoinMessage = require('bitcoinjs-message');
       
-      // Since signature verification requires crypto libraries that need
-      // proper setup, we'll indicate this feature needs enhancement
-      res.json({ 
-        valid: false, 
-        message: "Signature verification requires additional setup. The signature format from Ledger needs to be converted to Bitcoin message signature format."
-      });
+      // For Native SegWit addresses (bc1...), we need special handling
+      const isSegwit = address.startsWith('bc1') || address.startsWith('tb1');
+      
+      try {
+        // Try standard verification first
+        const isValid = bitcoinMessage.verify(message, address, signature);
+        res.json({ valid: isValid });
+        return;
+      } catch (e1) {
+        // For SegWit, try with checkSegwitAlways flag
+        if (isSegwit) {
+          try {
+            const isValid = bitcoinMessage.verify(message, address, signature, null, true);
+            res.json({ valid: isValid });
+            return;
+          } catch (e2) {
+            // Try converting signature format - Ledger may return different format
+            try {
+              const sigBuffer = Buffer.from(signature, 'base64');
+              // Adjust recovery flag for SegWit (BIP137)
+              if (sigBuffer.length === 65) {
+                // Try different recovery flags for p2wpkh (39-42)
+                for (let flag = 39; flag <= 42; flag++) {
+                  try {
+                    const adjustedSig = Buffer.concat([Buffer.from([flag]), sigBuffer.slice(1)]);
+                    const isValid = bitcoinMessage.verify(message, address, adjustedSig, null, true);
+                    if (isValid) {
+                      res.json({ valid: true });
+                      return;
+                    }
+                  } catch (e) {
+                    continue;
+                  }
+                }
+              }
+            } catch (e3) {
+              // Fall through
+            }
+          }
+        }
+        
+        res.json({ valid: false, error: "Signature verification failed" });
+      }
     } catch (error) {
       console.error("Error verifying signature:", error);
       res.json({ valid: false, error: "Verification failed" });
