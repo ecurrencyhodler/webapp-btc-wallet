@@ -59,12 +59,6 @@ export default function Dashboard() {
                   ${usdBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
                 </div>
 
-                <div className="text-sm text-muted-foreground mt-2 flex items-center gap-2">
-                  <span className="text-primary font-medium">1 BTC = ${btcPrice.toLocaleString()}</span>
-                  <span className="text-emerald-500 flex items-center gap-0.5 text-xs bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
-                    <ArrowUpRight className="w-3 h-3" /> +2.4%
-                  </span>
-                </div>
               </div>
 
               <div className="flex gap-4">
