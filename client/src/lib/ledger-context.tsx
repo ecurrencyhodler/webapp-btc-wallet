@@ -69,7 +69,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       const transport = await TransportWebHID.create();
       setTransport(transport);
       
-      const btc = new AppBtc({ transport, currency: "bitcoin" });
+      const btc = new AppBtc(transport);
       
       // Get Native Segwit Address (bech32)
       // Path: 84'/0'/0'/0/0
@@ -168,7 +168,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     });
 
     try {
-      const btc = new AppBtc({ transport, currency: "bitcoin" });
+      const btc = new AppBtc(transport);
       const path = "84'/0'/0'/0/0"; // Same path as address
       const hexMessage = Buffer.from(message).toString('hex');
       
