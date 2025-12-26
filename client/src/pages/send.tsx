@@ -126,7 +126,12 @@ export default function SendPage() {
                       <span>Available: {btcBalance} BTC</span>
                       <span 
                         className="text-primary cursor-pointer hover:underline"
-                        onClick={() => form.setValue("amount", (btcBalance - 0.0001).toString())} // simplistic fee deduction
+                        onClick={() => {
+                          // Estimate ~1500 sats for a typical transaction fee
+                          const estimatedFee = 0.000015;
+                          const maxAmount = Math.max(0, btcBalance - estimatedFee);
+                          form.setValue("amount", maxAmount.toFixed(8));
+                        }}
                       >
                         Use Max
                       </span>
