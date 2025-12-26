@@ -93,11 +93,22 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     } catch (e: any) {
       console.error(e);
       setStatus('error');
-      toast({
-        title: "Connection Failed",
-        description: e.message || "Could not connect to device.",
-        variant: "destructive",
-      });
+
+      // Handle specific HID permission error
+      if (e.message && e.message.includes("disallowed by permissions policy")) {
+        toast({
+          title: "Permission Error",
+          description: "WebHID is not supported in this embedded view. Please open the app in a new tab.",
+          variant: "destructive",
+          duration: 10000,
+        });
+      } else {
+        toast({
+          title: "Connection Failed",
+          description: e.message || "Could not connect to device.",
+          variant: "destructive",
+        });
+      }
     }
   };
 

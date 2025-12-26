@@ -1,9 +1,13 @@
 import { useLedger } from "@/lib/ledger-context";
 import { Button } from "@/components/ui/button";
-import { Loader2, Usb } from "lucide-react";
+import { Loader2, Usb, ExternalLink } from "lucide-react";
 
 export default function Connect() {
   const { connect, status } = useLedger();
+
+  const openInNewTab = () => {
+    window.open(window.location.href, '_blank');
+  };
 
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center relative">
@@ -19,7 +23,7 @@ export default function Connect() {
           </p>
         </div>
 
-        <div className="pt-8">
+        <div className="pt-8 flex flex-col items-center gap-4">
           <Button 
             size="lg" 
             onClick={connect} 
@@ -38,8 +42,18 @@ export default function Connect() {
               </>
             )}
           </Button>
+
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={openInNewTab}
+            className="text-muted-foreground hover:text-white"
+          >
+            <ExternalLink className="w-4 h-4 mr-2" />
+            Open in New Tab (Required for WebHID)
+          </Button>
           
-          <p className="mt-6 text-xs text-muted-foreground">
+          <p className="mt-2 text-xs text-muted-foreground">
             Supports Ledger Nano S, S Plus, and Nano X
           </p>
         </div>
