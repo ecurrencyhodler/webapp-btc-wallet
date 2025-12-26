@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from '@/hooks/use-toast';
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
-import AppBtc from "@ledgerhq/hw-app-btc";
+import { AppClient, DefaultWalletPolicy } from "ledger-bitcoin";
 import { listen } from "@ledgerhq/logs";
 import { Buffer } from 'buffer';
 
@@ -40,9 +40,11 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   const [btcPrice, setBtcPrice] = useState(96420.50);
   const [address, setAddress] = useState("");
   const [transport, setTransport] = useState<any>(null);
+  const [appClient, setAppClient] = useState<AppClient | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [masterFingerprint, setMasterFingerprint] = useState<string>("");
+  const [xpub, setXpub] = useState<string>("");
 
-  // Fetch BTC price on mount and every 60 seconds
   useEffect(() => {
     const fetchPrice = async () => {
       try {
@@ -59,7 +61,6 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch address data when address changes
   useEffect(() => {
     if (address) {
       refreshBalance();
@@ -69,42 +70,42 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   const connect = async () => {
     try {
       setStatus('connecting');
-      const transport = await TransportWebHID.create();
+      const newTransport = await TransportWebHID.create();
+      setTransport(newTransport);
       
-      // Patch for version mismatch between hw-app-btc@10.13.1 and transport-webhid@6.x
-      // The newer hw-app-btc expects decorateAppAPIMethods which doesn't exist in older transports
-      if (!transport.decorateAppAPIMethods) {
-        (transport as any).decorateAppAPIMethods = function(
-          self: any,
-          methods: string[],
-          scrambleKey: string | Buffer
-        ) {
-          for (const methodName of methods) {
-            (self as any)[methodName] = (self as any)[methodName];
-          }
-        };
-      }
+      const app = new AppClient(newTransport);
+      setAppClient(app);
       
-      setTransport(transport);
+      const fpr = await app.getMasterFingerprint();
+      const fingerprint = fpr.toString("hex");
+      setMasterFingerprint(fingerprint);
       
-      const btc = new AppBtc({ transport, currency: "bitcoin" });
+      const extPubKey = await app.getExtendedPubkey("m/84'/0'/0'");
+      setXpub(extPubKey);
       
-      // Get Native Segwit Address (bech32)
-      // Path: 84'/0'/0'/0/0
-      const result = await btc.getWalletPublicKey("84'/0'/0'/0/0", {
-        format: "bech32"
-      });
+      const policy = new DefaultWalletPolicy(
+        "wpkh(@0/**)",
+        `[${fingerprint}/84'/0'/0']${extPubKey}`
+      );
       
-      setAddress(result.bitcoinAddress);
-
+      const bitcoinAddress = await app.getWalletAddress(
+        policy,
+        null,
+        0,
+        0,
+        false
+      );
+      
+      setAddress(bitcoinAddress);
       setStatus('connected');
+      
       toast({
         title: "Ledger Connected",
         description: "Device connected successfully.",
         variant: "default",
       });
       
-      transport.on("disconnect", () => {
+      newTransport.on("disconnect", () => {
         disconnect();
       });
 
@@ -112,7 +113,6 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       console.error(e);
       setStatus('error');
 
-      // Handle specific HID permission error
       if (e.message && e.message.includes("disallowed by permissions policy")) {
         toast({
           title: "Permission Error",
@@ -135,10 +135,13 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       transport.close();
       setTransport(null);
     }
+    setAppClient(null);
     setStatus('disconnected');
     setAddress("");
     setBtcBalance(0);
     setTransactions([]);
+    setMasterFingerprint("");
+    setXpub("");
     toast({
       title: "Ledger Disconnected",
       description: "Device safely disconnected.",
@@ -149,19 +152,11 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     if (!transport || status !== 'connected') throw new Error("Device not connected");
     if (amount > btcBalance) throw new Error("Insufficient funds");
     
-    // In a real implementation, we would:
-    // 1. Fetch UTXOs from an explorer API
-    // 2. Construct the transaction
-    // 3. Use btc.createPaymentTransactionNew to sign inputs
-    // 4. Broadcast via API
-    
-    // For this prototype, we simulate the interaction
     toast({
       title: "Confirm on Device",
       description: "Please review and approve the transaction on your Ledger.",
     });
 
-    // Simulate delay for user interaction
     await new Promise(resolve => setTimeout(resolve, 3000));
     
     setBtcBalance(prev => prev - amount);
@@ -178,7 +173,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   };
 
   const signMessage = async (message: string) => {
-    if (!transport || status !== 'connected') throw new Error("Device not connected");
+    if (!appClient || status !== 'connected') throw new Error("Device not connected");
     
     toast({
       title: "Confirm on Device",
@@ -186,37 +181,26 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     });
 
     try {
-      const btc = new AppBtc({ transport, currency: "bitcoin" });
-      const path = "84'/0'/0'/0/0"; // Same path as address
-      const hexMessage = Buffer.from(message).toString('hex');
+      const result = await appClient.signMessage(
+        Buffer.from(message),
+        "m/84'/0'/0'/0/0"
+      );
       
-      const result = await btc.signMessage(path, hexMessage);
-      
-      // Convert v, r, s to base64 signature
-      const v = result['v'];
-      const r = result['r'];
-      const s = result['s'];
-      
-      // This is a simplified representation. A real implementation would verify the signature format needed.
-      return `r:${r}, s:${s}, v:${v}`;
+      return result;
     } catch (e: any) {
       console.error("Signing failed", e);
       throw new Error(e.message || "Signing failed");
     }
   };
 
-  // Ledger JS SDK doesn't have a direct "signPSBT" method easily exposed in the high-level API for all cases
-  // usually it involves parsing the PSBT and signing inputs individually.
-  // We will keep this simulated for simplicity unless specific PSBT libraries are added.
   const signPsbt = async (psbtBase64: string) => {
-    if (status !== 'connected') throw new Error("Device not connected");
+    if (!appClient || status !== 'connected') throw new Error("Device not connected");
     
     toast({
       title: "Confirm on Device",
       description: "Please review the transaction details.",
     });
 
-    // Simulate signing delay
     await new Promise(resolve => setTimeout(resolve, 2500));
     return psbtBase64 + "_signed_simulated";
   };
