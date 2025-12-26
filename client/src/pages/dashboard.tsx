@@ -1,38 +1,19 @@
 import { useLedger } from "@/lib/ledger-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowUpRight, ArrowDownLeft, Bitcoin, RefreshCw, DollarSign } from "lucide-react";
-import { useState } from "react";
+import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 
 export default function Dashboard() {
-  const { btcBalance, btcPrice, transactions, refreshBalance } = useLedger();
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await refreshBalance();
-    setIsRefreshing(false);
-  };
-
+  const { btcBalance, btcPrice, transactions } = useLedger();
   const usdBalance = btcBalance * btcPrice;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <header className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold font-display tracking-tight text-white">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Your secure Bitcoin hardware wallet</p>
-        </div>
-        <Button 
-          variant="outline" 
-          size="icon" 
-          onClick={handleRefresh}
-          className={isRefreshing ? "animate-spin" : ""}
-        >
-          <RefreshCw className="h-4 w-4" />
-        </Button>
+      <header>
+        <h1 className="text-3xl font-bold font-display tracking-tight text-white">Dashboard</h1>
+        <p className="text-muted-foreground mt-1">Your secure Bitcoin hardware wallet</p>
       </header>
 
       {/* Balance Card */}
