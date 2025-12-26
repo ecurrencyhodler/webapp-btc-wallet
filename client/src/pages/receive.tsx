@@ -76,10 +76,6 @@ export default function ReceivePage() {
             <Shield className="w-4 h-4 mr-2" />
             {isVerifying ? "Verifying..." : "Verify on Device"}
           </Button>
-
-          <div className="text-xs text-center text-yellow-500/80 bg-yellow-500/10 p-3 rounded-lg border border-yellow-500/20 max-w-sm">
-            Only send <strong>Bitcoin (BTC)</strong> to this address. Sending any other coins may result in permanent loss.
-          </div>
         </CardContent>
       </Card>
     </div>
