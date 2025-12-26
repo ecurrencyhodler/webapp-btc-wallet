@@ -1,8 +1,7 @@
 import { useLedger } from "@/lib/ledger-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,8 +9,9 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ArrowUpRight, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useLocation } from "wouter";
+import { Slider } from "@/components/ui/slider";
 
 const formSchema = z.object({
   address: z.string().min(26, "Invalid Bitcoin address").regex(/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/, "Invalid Bitcoin address format"),
@@ -23,6 +23,7 @@ export default function SendPage() {
   const [isSigning, setIsSigning] = useState(false);
   const [_, setLocation] = useLocation();
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [feeRate, setFeeRate] = useState(10);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,6 +35,17 @@ export default function SendPage() {
 
   const amountValue = form.watch("amount");
   const usdValue = amountValue ? (Number(amountValue) * btcPrice).toLocaleString(undefined, { maximumFractionDigits: 2 }) : "0.00";
+  
+  const estimatedVbytes = 140;
+  const feeBtc = (feeRate * estimatedVbytes) / 100000000;
+  const feeUsd = feeBtc * btcPrice;
+
+  const getFeeLabel = () => {
+    if (feeRate <= 5) return "Low";
+    if (feeRate <= 15) return "Medium";
+    if (feeRate <= 30) return "High";
+    return "Priority";
+  };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSigning(true);
@@ -89,7 +101,7 @@ export default function SendPage() {
       <Card className="glass-panel border-zinc-800">
         <CardContent className="pt-6">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="address"
@@ -97,7 +109,7 @@ export default function SendPage() {
                   <FormItem>
                     <FormLabel>Recipient Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="bc1q..." className="bg-zinc-950/50 font-mono" {...field} />
+                      <Input placeholder="bc1q..." className="bg-zinc-950/50 font-mono" {...field} data-testid="input-recipient-address" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,7 +127,8 @@ export default function SendPage() {
                         <Input 
                           placeholder="0.00" 
                           className="bg-zinc-950/50 font-mono text-lg pl-4 pr-24" 
-                          {...field} 
+                          {...field}
+                          data-testid="input-amount"
                         />
                       </FormControl>
                       <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground bg-zinc-900 px-2 py-1 rounded">
@@ -123,15 +136,14 @@ export default function SendPage() {
                       </div>
                     </div>
                     <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                      <span>Available: {btcBalance} BTC</span>
+                      <span>Available: {btcBalance.toFixed(8)} BTC</span>
                       <span 
                         className="text-primary cursor-pointer hover:underline"
                         onClick={() => {
-                          // Estimate ~1500 sats for a typical transaction fee
-                          const estimatedFee = 0.000015;
-                          const maxAmount = Math.max(0, btcBalance - estimatedFee);
+                          const maxAmount = Math.max(0, btcBalance - feeBtc);
                           form.setValue("amount", maxAmount.toFixed(8));
                         }}
+                        data-testid="button-use-max"
                       >
                         Use Max
                       </span>
@@ -141,7 +153,42 @@ export default function SendPage() {
                 )}
               />
 
-              <Button type="submit" size="lg" className="w-full h-12 text-base font-medium" disabled={isSigning}>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <FormLabel>Network Fee</FormLabel>
+                  <span className="text-sm font-medium text-primary">{getFeeLabel()}</span>
+                </div>
+                
+                <div className="space-y-4">
+                  <Slider
+                    value={[feeRate]}
+                    onValueChange={(value) => setFeeRate(value[0])}
+                    min={1}
+                    max={100}
+                    step={1}
+                    className="w-full"
+                    data-testid="slider-fee-rate"
+                  />
+                  
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Slow</span>
+                    <span>Fast</span>
+                  </div>
+                  
+                  <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-3 space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Fee Rate</span>
+                      <span className="font-mono">{feeRate} sat/vB</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Estimated Fee</span>
+                      <span className="font-mono">{feeBtc.toFixed(8)} BTC <span className="text-muted-foreground">(≈ ${feeUsd.toFixed(2)})</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Button type="submit" size="lg" className="w-full h-12 text-base font-medium" disabled={isSigning} data-testid="button-send">
                 {isSigning ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -178,6 +225,7 @@ export default function SendPage() {
               <div className="text-xs text-muted-foreground">Confirm Output</div>
               <div className="font-mono text-sm break-all">{form.getValues().address}</div>
               <div className="font-mono font-bold text-primary mt-2">{form.getValues().amount} BTC</div>
+              <div className="text-xs text-muted-foreground mt-2">Fee: {feeBtc.toFixed(8)} BTC</div>
             </div>
           </div>
         </DialogContent>
