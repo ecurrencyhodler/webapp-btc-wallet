@@ -67,10 +67,10 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (address) {
+    if (addresses.length > 0) {
       refreshBalance();
     }
-  }, [address]);
+  }, [addresses]);
 
   const connect = async () => {
     try {
@@ -239,17 +239,32 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   };
 
   const refreshBalance = async () => {
-    if (!address) return;
+    if (addresses.length === 0) return;
     
     try {
-      const response = await fetch(`/api/address/${address}`);
-      const data = await response.json();
+      // Fetch balances for all derived addresses
+      const allData = await Promise.all(
+        addresses.map(async (addr) => {
+          const response = await fetch(`/api/address/${addr}`);
+          return response.json();
+        })
+      );
       
-      setBtcBalance(data.balance);
-      setTransactions(data.transactions.map((tx: any) => ({
-        ...tx,
-        date: new Date(tx.date)
-      })));
+      // Aggregate total balance across all addresses
+      const totalBalance = allData.reduce((sum, data) => sum + (data.balance || 0), 0);
+      setBtcBalance(totalBalance);
+      
+      // Combine and sort all transactions by date
+      const allTransactions = allData
+        .flatMap((data) => data.transactions || [])
+        .map((tx: any) => ({
+          ...tx,
+          date: new Date(tx.date)
+        }))
+        .sort((a, b) => b.date.getTime() - a.date.getTime())
+        .slice(0, 20); // Keep last 20 transactions
+      
+      setTransactions(allTransactions);
     } catch (error) {
       console.error('Failed to fetch balance:', error);
       toast({
