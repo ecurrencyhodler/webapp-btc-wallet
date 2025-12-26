@@ -46,6 +46,8 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [masterFingerprint, setMasterFingerprint] = useState<string>("");
   const [xpub, setXpub] = useState<string>("");
+  const [keepAliveInterval, setKeepAliveInterval] = useState<NodeJS.Timeout | null>(null);
+  const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
 
   useEffect(() => {
     const fetchPrice = async () => {
@@ -107,6 +109,27 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       setAddress(derivedAddresses[0]);
       setStatus('connected');
       
+      // Start keep-alive ping every 15 seconds to prevent device sleep
+      const interval = setInterval(async () => {
+        try {
+          // Get master fingerprint as a lightweight ping
+          await app.getMasterFingerprint();
+        } catch (err) {
+          console.log("Keep-alive ping failed, device may have disconnected");
+        }
+      }, 15000);
+      setKeepAliveInterval(interval);
+      
+      // Request wake lock to prevent system sleep
+      if ('wakeLock' in navigator) {
+        try {
+          const lock = await (navigator as any).wakeLock.request('screen');
+          setWakeLock(lock);
+        } catch (err) {
+          console.log("Wake lock not available");
+        }
+      }
+      
       toast({
         title: "Ledger Connected",
         description: "Device connected successfully.",
@@ -139,6 +162,18 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   };
 
   const disconnect = () => {
+    // Stop keep-alive ping
+    if (keepAliveInterval) {
+      clearInterval(keepAliveInterval);
+      setKeepAliveInterval(null);
+    }
+    
+    // Release wake lock
+    if (wakeLock) {
+      wakeLock.release();
+      setWakeLock(null);
+    }
+    
     if (transport) {
       transport.close();
       setTransport(null);
