@@ -4,15 +4,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { Loader2, PenTool, ShieldCheck, CheckCircle2, XCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export default function SignPage() {
-  const { signMessage, address } = useLedger();
+  const { signMessage, addresses } = useLedger();
   const [activeTab, setActiveTab] = useState("message");
   
   // Message State
+  const [selectedAddressIndex, setSelectedAddressIndex] = useState(0);
   const [message, setMessage] = useState("");
   const [messageSignature, setMessageSignature] = useState("");
   const [isSigningMessage, setIsSigningMessage] = useState(false);
@@ -32,7 +34,7 @@ export default function SignPage() {
     setSigningModalOpen(true);
     setIsSigningMessage(true);
     try {
-      const sig = await signMessage(message);
+      const sig = await signMessage(message, selectedAddressIndex);
       setMessageSignature(sig);
     } catch (e) {
       console.error(e);
@@ -93,11 +95,26 @@ export default function SignPage() {
             <CardContent className="pt-6 space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Signing Address</label>
-                <div className="bg-zinc-950 border border-zinc-800 p-3 rounded-lg">
-                  <code className="text-sm font-mono text-zinc-300 break-all" data-testid="text-signing-address">
-                    {address}
-                  </code>
-                </div>
+                <Select 
+                  value={selectedAddressIndex.toString()} 
+                  onValueChange={(val) => setSelectedAddressIndex(parseInt(val))}
+                >
+                  <SelectTrigger className="bg-zinc-950/50 border-zinc-800 font-mono text-sm" data-testid="select-signing-address">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-950 border-zinc-800">
+                    {addresses.map((addr, index) => (
+                      <SelectItem 
+                        key={index} 
+                        value={index.toString()} 
+                        className="font-mono text-xs"
+                        data-testid={`option-address-${index}`}
+                      >
+                        {addr}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">

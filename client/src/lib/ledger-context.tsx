@@ -23,12 +23,12 @@ interface LedgerContextType {
   btcBalance: number;
   btcPrice: number;
   address: string;
+  addresses: string[];
   transactions: Transaction[];
   connect: () => Promise<void>;
   disconnect: () => void;
   sendBitcoin: (amount: number, to: string) => Promise<string>;
-  signMessage: (message: string) => Promise<string>;
-  signPsbt: (psbtBase64: string) => Promise<string>;
+  signMessage: (message: string, addressIndex?: number) => Promise<string>;
   refreshBalance: () => Promise<void>;
   verifyAddressOnDevice: () => Promise<void>;
 }
@@ -40,6 +40,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   const [btcBalance, setBtcBalance] = useState(0);
   const [btcPrice, setBtcPrice] = useState(96420.50);
   const [address, setAddress] = useState("");
+  const [addresses, setAddresses] = useState<string[]>([]);
   const [transport, setTransport] = useState<any>(null);
   const [appClient, setAppClient] = useState<AppClient | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -89,15 +90,21 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
         `[${fingerprint}/84'/0'/0']${extPubKey}`
       );
       
-      const bitcoinAddress = await app.getWalletAddress(
-        policy,
-        null,
-        0,
-        0,
-        false
-      );
+      // Derive first 5 addresses
+      const derivedAddresses: string[] = [];
+      for (let i = 0; i < 5; i++) {
+        const addr = await app.getWalletAddress(
+          policy,
+          null,
+          0,
+          i,
+          false
+        );
+        derivedAddresses.push(addr);
+      }
       
-      setAddress(bitcoinAddress);
+      setAddresses(derivedAddresses);
+      setAddress(derivedAddresses[0]);
       setStatus('connected');
       
       toast({
@@ -139,6 +146,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     setAppClient(null);
     setStatus('disconnected');
     setAddress("");
+    setAddresses([]);
     setBtcBalance(0);
     setTransactions([]);
     setMasterFingerprint("");
@@ -173,7 +181,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     return "tx_hash_simulated_" + Math.random().toString(36).substring(7);
   };
 
-  const signMessage = async (message: string) => {
+  const signMessage = async (message: string, addressIndex: number = 0) => {
     if (!appClient || status !== 'connected') throw new Error("Device not connected");
     
     toast({
@@ -184,7 +192,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     try {
       const result = await appClient.signMessage(
         Buffer.from(message),
-        "m/84'/0'/0'/0/0"
+        `m/84'/0'/0'/0/${addressIndex}`
       );
       
       return result;
@@ -192,18 +200,6 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       console.error("Signing failed", e);
       throw new Error(e.message || "Signing failed");
     }
-  };
-
-  const signPsbt = async (psbtBase64: string) => {
-    if (!appClient || status !== 'connected') throw new Error("Device not connected");
-    
-    toast({
-      title: "Confirm on Device",
-      description: "Please review the transaction details.",
-    });
-
-    await new Promise(resolve => setTimeout(resolve, 2500));
-    return psbtBase64 + "_signed_simulated";
   };
 
   const refreshBalance = async () => {
@@ -272,12 +268,12 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       btcBalance,
       btcPrice,
       address,
+      addresses,
       transactions,
       connect,
       disconnect,
       sendBitcoin,
       signMessage,
-      signPsbt,
       refreshBalance,
       verifyAddressOnDevice
     }}>
