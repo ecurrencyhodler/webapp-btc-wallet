@@ -83,11 +83,8 @@ export default function Dashboard() {
         <h3 className="text-xl font-semibold font-display">Recent Activity</h3>
         <div className="space-y-3">
           {transactions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center" data-testid="empty-activity">
-              <div className="w-12 h-12 rounded-full bg-zinc-800/50 flex items-center justify-center mb-4">
-                <Bitcoin className="w-6 h-6 text-zinc-600" />
-              </div>
-              <p className="text-muted-foreground text-sm max-w-[280px]">
+            <div className="py-6" data-testid="empty-activity">
+              <p className="text-muted-foreground text-sm">
                 No transactions yet. Your activity will appear here once you send or receive bitcoin.
               </p>
             </div>
