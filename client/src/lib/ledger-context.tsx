@@ -31,33 +31,37 @@ interface LedgerContextType {
 
 const LedgerContext = createContext<LedgerContextType | undefined>(undefined);
 
-const MOCK_BTC_PRICE = 96420.50;
-
 export function LedgerProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<LedgerStatus>('disconnected');
   const [btcBalance, setBtcBalance] = useState(0);
+  const [btcPrice, setBtcPrice] = useState(96420.50);
   const [address, setAddress] = useState("");
   const [transport, setTransport] = useState<any>(null);
-  
-  // Mock transactions remain mock for now as we can't easily fetch full history without an indexer API
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    {
-      id: 'tx-1',
-      type: 'received',
-      amount: 0.15,
-      date: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-      address: 'bc1q...9wlh',
-      status: 'confirmed'
-    },
-    {
-      id: 'tx-2',
-      type: 'sent',
-      amount: 0.02,
-      date: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-      address: 'bc1q...3kjs',
-      status: 'confirmed'
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  // Fetch BTC price on mount and every 60 seconds
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        const response = await fetch('/api/btc-price');
+        const data = await response.json();
+        setBtcPrice(data.price);
+      } catch (error) {
+        console.error('Failed to fetch BTC price:', error);
+      }
+    };
+
+    fetchPrice();
+    const interval = setInterval(fetchPrice, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Fetch address data when address changes
+  useEffect(() => {
+    if (address) {
+      refreshBalance();
     }
-  ]);
+  }, [address]);
 
   const connect = async () => {
     try {
@@ -74,15 +78,11 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       });
       
       setAddress(result.bitcoinAddress);
-      
-      // Set a mock balance for demonstration since we can't query the blockchain directly without an API key
-      // In a real app, we would query an explorer API with the address
-      setBtcBalance(0.42069); 
 
       setStatus('connected');
       toast({
         title: "Ledger Connected",
-        description: "Nano X connected successfully.",
+        description: "Device connected successfully.",
         variant: "default",
       });
       
@@ -120,6 +120,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     setStatus('disconnected');
     setAddress("");
     setBtcBalance(0);
+    setTransactions([]);
     toast({
       title: "Ledger Disconnected",
       description: "Device safely disconnected.",
@@ -171,7 +172,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       const path = "84'/0'/0'/0/0"; // Same path as address
       const hexMessage = Buffer.from(message).toString('hex');
       
-      const result = await btc.signMessageNew(path, hexMessage);
+      const result = await btc.signMessage(path, hexMessage);
       
       // Convert v, r, s to base64 signature
       const v = result['v'];
@@ -203,15 +204,32 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   };
 
   const refreshBalance = async () => {
-    // Simulate network fetch
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    if (!address) return;
+    
+    try {
+      const response = await fetch(`/api/address/${address}`);
+      const data = await response.json();
+      
+      setBtcBalance(data.balance);
+      setTransactions(data.transactions.map((tx: any) => ({
+        ...tx,
+        date: new Date(tx.date)
+      })));
+    } catch (error) {
+      console.error('Failed to fetch balance:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch wallet data. Using cached data.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <LedgerContext.Provider value={{
       status,
       btcBalance,
-      btcPrice: MOCK_BTC_PRICE,
+      btcPrice,
       address,
       transactions,
       connect,
