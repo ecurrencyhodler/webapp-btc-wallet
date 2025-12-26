@@ -93,5 +93,35 @@ export async function registerRoutes(
     }
   });
 
+  // Verify Bitcoin message signature
+  app.post("/api/verify-signature", async (req, res) => {
+    try {
+      const { address, message, signature } = req.body;
+      
+      if (!address || !message || !signature) {
+        res.status(400).json({ error: "Missing required fields", valid: false });
+        return;
+      }
+      
+      // For a complete implementation, you would use bitcoinjs-message library
+      // to verify the signature cryptographically. For now, we'll return a 
+      // placeholder that indicates this needs the bitcoinjs-message package.
+      // 
+      // Example with bitcoinjs-message:
+      // const bitcoinMessage = require('bitcoinjs-message');
+      // const isValid = bitcoinMessage.verify(message, address, signature);
+      
+      // Since signature verification requires crypto libraries that need
+      // proper setup, we'll indicate this feature needs enhancement
+      res.json({ 
+        valid: false, 
+        message: "Signature verification requires additional setup. The signature format from Ledger needs to be converted to Bitcoin message signature format."
+      });
+    } catch (error) {
+      console.error("Error verifying signature:", error);
+      res.json({ valid: false, error: "Verification failed" });
+    }
+  });
+
   return httpServer;
 }
