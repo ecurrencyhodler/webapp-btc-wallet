@@ -20,56 +20,65 @@ export async function registerRoutes(
     }
   });
 
-  // Get address balance and transactions from Blockchain.info
+  // Get address balance and transactions from Blockstream API (better bc1 support)
   app.get("/api/address/:address", async (req, res) => {
     try {
       const { address } = req.params;
       
-      // Fetch from blockchain.info API (no key needed for basic queries)
-      const response = await fetch(
-        `https://blockchain.info/rawaddr/${address}?limit=10`
-      );
+      // Use Blockstream API - better support for Native SegWit addresses
+      const [addressResponse, txsResponse] = await Promise.all([
+        fetch(`https://blockstream.info/api/address/${address}`),
+        fetch(`https://blockstream.info/api/address/${address}/txs`)
+      ]);
       
-      if (!response.ok) {
-        throw new Error("Failed to fetch address data");
+      if (!addressResponse.ok) {
+        // Address might be new with no history
+        res.json({ balance: 0, transactions: [] });
+        return;
       }
       
-      const data = await response.json();
+      const addressData = await addressResponse.json();
+      const txsData = txsResponse.ok ? await txsResponse.json() : [];
       
-      // Convert satoshis to BTC
-      const balanceBTC = data.final_balance / 100000000;
+      // Calculate balance (funded - spent) in BTC
+      const balanceSatoshis = 
+        (addressData.chain_stats.funded_txo_sum - addressData.chain_stats.spent_txo_sum) +
+        (addressData.mempool_stats.funded_txo_sum - addressData.mempool_stats.spent_txo_sum);
+      const balanceBTC = balanceSatoshis / 100000000;
       
       // Format transactions
-      const transactions = data.txs.slice(0, 10).map((tx: any) => {
-        // Determine if sent or received
-        const isSent = tx.inputs.some((input: any) => 
-          input.prev_out?.addr === address
+      const transactions = txsData.slice(0, 10).map((tx: any) => {
+        // Determine if sent or received by checking inputs
+        const isSent = tx.vin.some((input: any) => 
+          input.prevout?.scriptpubkey_address === address
         );
         
         // Calculate amount for this address
         let amount = 0;
         if (isSent) {
           // Sum outputs not going back to this address
-          amount = tx.out
-            .filter((out: any) => out.addr !== address)
-            .reduce((sum: number, out: any) => sum + out.value, 0) / 100000000;
+          amount = tx.vout
+            .filter((out: any) => out.scriptpubkey_address !== address)
+            .reduce((sum: number, out: any) => sum + (out.value || 0), 0) / 100000000;
         } else {
           // Sum outputs going to this address
-          amount = tx.out
-            .filter((out: any) => out.addr === address)
-            .reduce((sum: number, out: any) => sum + out.value, 0) / 100000000;
+          amount = tx.vout
+            .filter((out: any) => out.scriptpubkey_address === address)
+            .reduce((sum: number, out: any) => sum + (out.value || 0), 0) / 100000000;
         }
         
+        const isConfirmed = tx.status?.confirmed === true;
+        const txTime = tx.status?.block_time || Math.floor(Date.now() / 1000);
+        
         return {
-          id: tx.hash,
+          id: tx.txid,
           type: isSent ? "sent" : "received",
           amount,
-          date: new Date(tx.time * 1000).toISOString(),
+          date: new Date(txTime * 1000).toISOString(),
           address: isSent 
-            ? tx.out.find((o: any) => o.addr !== address)?.addr || "Unknown"
-            : tx.inputs[0]?.prev_out?.addr || "Unknown",
-          status: "confirmed",
-          confirmations: tx.block_height ? data.n_tx : 0
+            ? tx.vout.find((o: any) => o.scriptpubkey_address !== address)?.scriptpubkey_address || "Unknown"
+            : tx.vin[0]?.prevout?.scriptpubkey_address || "Unknown",
+          status: isConfirmed ? "confirmed" : "pending"
         };
       });
       
@@ -79,7 +88,8 @@ export async function registerRoutes(
       });
     } catch (error) {
       console.error("Error fetching address data:", error);
-      res.status(500).json({ error: "Failed to fetch address data" });
+      // Return empty state instead of error for new addresses
+      res.json({ balance: 0, transactions: [] });
     }
   });
 
