@@ -8,7 +8,6 @@ import { Link } from "wouter";
 
 export default function Dashboard() {
   const { btcBalance, btcPrice, transactions, refreshBalance } = useLedger();
-  const [showUsd, setShowUsd] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = async () => {
@@ -49,25 +48,17 @@ export default function Dashboard() {
             <div className="flex flex-col gap-6">
               <div>
                 <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Balance</span>
-                <div 
-                  className="flex items-baseline gap-2 mt-2 cursor-pointer select-none"
-                  onClick={() => setShowUsd(!showUsd)}
-                >
-                  <motion.h2 
-                    key={showUsd ? 'usd' : 'btc'}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-5xl md:text-6xl font-bold font-display tracking-tight text-white"
-                  >
-                    {showUsd 
-                      ? `$${usdBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                      : `${btcBalance.toFixed(8)}`
-                    }
-                  </motion.h2>
-                  <span className="text-xl md:text-2xl font-medium text-muted-foreground">
-                    {showUsd ? 'USD' : 'BTC'}
-                  </span>
+                <div className="flex items-baseline gap-2 mt-2 select-none">
+                  <h2 className="text-5xl md:text-6xl font-bold font-display tracking-tight text-white">
+                    {btcBalance.toFixed(8)}
+                  </h2>
+                  <span className="text-xl md:text-2xl font-medium text-muted-foreground">BTC</span>
                 </div>
+                
+                <div className="mt-1 text-2xl font-medium text-zinc-400">
+                  ${usdBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
+                </div>
+
                 <div className="text-sm text-muted-foreground mt-2 flex items-center gap-2">
                   <span className="text-primary font-medium">1 BTC = ${btcPrice.toLocaleString()}</span>
                   <span className="text-emerald-500 flex items-center gap-0.5 text-xs bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
