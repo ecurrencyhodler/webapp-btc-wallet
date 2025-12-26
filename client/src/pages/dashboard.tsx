@@ -75,7 +75,13 @@ export default function Dashboard() {
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: i * 0.1 }}
             >
-              <div className="group flex items-center justify-between p-4 rounded-xl border border-white/5 bg-zinc-900/50 hover:bg-zinc-900 transition-colors">
+              <a 
+                href={`https://mempool.space/tx/${tx.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between p-4 rounded-xl border border-white/5 bg-zinc-900/50 hover:bg-zinc-900 transition-colors cursor-pointer"
+                data-testid={`link-tx-${tx.id}`}
+              >
                 <div className="flex items-center gap-4">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                     tx.type === 'received' 
@@ -102,7 +108,7 @@ export default function Dashboard() {
                     ${(tx.amount * btcPrice).toLocaleString()}
                   </div>
                 </div>
-              </div>
+              </a>
             </motion.div>
           ))}
         </div>
