@@ -82,7 +82,16 @@ export default function Dashboard() {
       <div className="space-y-4">
         <h3 className="text-xl font-semibold font-display">Recent Activity</h3>
         <div className="space-y-3">
-          {transactions.map((tx, i) => (
+          {transactions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center" data-testid="empty-activity">
+              <div className="w-12 h-12 rounded-full bg-zinc-800/50 flex items-center justify-center mb-4">
+                <Bitcoin className="w-6 h-6 text-zinc-600" />
+              </div>
+              <p className="text-muted-foreground text-sm max-w-[280px]">
+                No transactions yet. Your activity will appear here once you send or receive bitcoin.
+              </p>
+            </div>
+          ) : transactions.map((tx, i) => (
             <motion.div
               key={tx.id}
               initial={{ x: -20, opacity: 0 }}
