@@ -20,45 +20,49 @@ export async function registerRoutes(
       return;
     }
     
-    try {
-      // Try CoinGecko first
-      const response = await fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
-        { signal: AbortSignal.timeout(5000) }
-      );
-      const data = await response.json();
-      
-      if (data?.bitcoin?.usd) {
-        cachedPrice = data.bitcoin.usd;
-        lastPriceUpdate = now;
-        res.json({ price: cachedPrice });
-        return;
+    const priceSources = [
+      {
+        name: "CoinGecko",
+        url: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
+        extract: (data: any) => data?.bitcoin?.usd
+      },
+      {
+        name: "Coinbase",
+        url: "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+        extract: (data: any) => data?.data?.amount ? parseFloat(data.data.amount) : null
+      },
+      {
+        name: "Blockchain.info",
+        url: "https://blockchain.info/ticker",
+        extract: (data: any) => data?.USD?.last
+      },
+      {
+        name: "Kraken",
+        url: "https://api.kraken.com/0/public/Ticker?pair=XBTUSD",
+        extract: (data: any) => data?.result?.XXBTZUSD?.c?.[0] ? parseFloat(data.result.XXBTZUSD.c[0]) : null
       }
-      
-      throw new Error("Invalid response format");
-    } catch (error) {
-      // Try Blockchain.info as fallback
+    ];
+    
+    for (const source of priceSources) {
       try {
-        const fallbackResponse = await fetch(
-          "https://blockchain.info/ticker",
-          { signal: AbortSignal.timeout(5000) }
-        );
-        const fallbackData = await fallbackResponse.json();
+        const response = await fetch(source.url, { signal: AbortSignal.timeout(3000) });
+        const data = await response.json();
+        const price = source.extract(data);
         
-        if (fallbackData?.USD?.last) {
-          cachedPrice = fallbackData.USD.last;
+        if (price && price > 0) {
+          cachedPrice = price;
           lastPriceUpdate = now;
           res.json({ price: cachedPrice });
           return;
         }
-      } catch (fallbackError) {
-        console.error("Fallback price fetch failed:", fallbackError);
+      } catch (error) {
+        console.log(`${source.name} price fetch failed, trying next...`);
       }
-      
-      // Return cached price as last resort
-      console.error("Error fetching BTC price:", error);
-      res.json({ price: cachedPrice });
     }
+    
+    // Return cached price as last resort
+    console.error("All price sources failed, using cached price");
+    res.json({ price: cachedPrice })
   });
 
   // Get address balance and transactions from Blockstream API (better bc1 support)
