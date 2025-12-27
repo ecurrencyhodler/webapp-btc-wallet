@@ -1,0 +1,577 @@
+221Unchecked runtime.lastError: Could not establish connection. Receiving end does not exist.Understand this error
+397Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+Unchecked runtime.lastError: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.Understand this error
+Unchecked runtime.lastError: The page keeping the extension port is moved into back/forward cache, so the message channel is closed.Understand this error
+306background.js:70 Could not complete _handleGetCredential: missing-public-key
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+background.js:70 Could not complete _handleGetCredential: missing-public-key
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:49:59 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:49:59 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:49:59 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:49:59 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:49:59 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:49:59 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:50:00 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:50:00 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:50:09 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:50:10 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:50:10 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 00:50:10 GMT-0500 (Eastern Standard Time)
+41background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 05:03:17 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 05:03:17 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 05:03:27 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 05:03:27 GMT-0500 (Eastern Standard Time)
+20background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:10:40 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:10:40 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:10:44 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:10:44 GMT-0500 (Eastern Standard Time)
+12background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+3background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:40:28 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:40:28 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:40:29 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:40:29 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:40:29 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:40:29 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:40:29 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:40:29 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:54:16 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:54:16 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:54:16 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:54:16 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:54:16 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 11:54:16 GMT-0500 (Eastern Standard Time)
+background.js:70 Unable to inject for a URL (redacted)
+(anonymous) @ background.js:70Understand this warning
+4background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+4background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <1022676566>
+background.js:70 Loaded page details in 2.8000001907348633 ms.
+background.js:70 Analyzed the page in 0.5 ms.
+background.js:70 📥 Received message <NmOfflineStatus> from native core <1022676566>. Duration: 38ms
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <3205810879>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <3205810879>. Duration: 3.1ms
+background.js:70 📤 Sending <NmShowUnlock> message to native core <3976980669>
+background.js:70 📥 Received message <Nothing> from native core <3976980669>. Duration: 5.7ms
+background.js:70 Performance diagnostic: "Ask the desktop app to show its lock screen" took 6.1ms to execute.
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 📤 Sending <NmRequestAccounts> message to native core <2864366667>
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 📥 Received message <NmRequestAccounts> from native core <2864366667>. Duration: 3.7ms
+background.js:70 📤 Sending <NmRequestAccounts> message to native core <1288411696>
+background.js:70 Hooray!; Unlocked account J4JE2X5X6VAW5BWGE3UUOFLZ2Q with MUK; 🎉
+background.js:70 We successfully unlocked 1 account(s) from a Desktop app with 1 unlocked and 0 locked account(s).
+background.js:70 📥 Received message <NmRequestAccounts> from native core <1288411696>. Duration: 10.7ms
+background.js:70 📤 Sending <NmRequestDelegatedSession> message to native core <2047092721>
+2background.js:70 Unable to fetch catalog apps as item list entries: XAM module not initialized
+background.js:1 Uncaught (in promise) Error: Could not find an active browser window.Understand this error
+background.js:70 [LM] Started Desktop Lock Monitor at 1766768675485 (Connected to desktop app).
+background.js:70 [LM] Started Desktop Lock Monitor at 1766768675489 (Connected to desktop app).
+background.js:70 Unable to fetch catalog apps as item list entries: XAM module not initialized
+background.js:70 Unable to get BO features for account undefined. CTX is undefined.
+(anonymous) @ background.js:70Understand this warning
+6background.js:70 Could not collect providers from all frames that were initially found.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Unable to get BO features for account undefined. CTX is undefined.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Received Modern Notification:<ClientCreated> from the native core
+background.js:70 Received Legacy Notification:<ClientCreated> from the native core
+background.js:70 📥 Received message <NmRequestDelegatedSession> from native core <2047092721>. Duration: 840.1ms
+background.js:70 📤 Sending <NmRequestDelegatedSession> message to native core <534961363>
+background.js:70 📥 Received message <NmRequestDelegatedSession> from native core <534961363>. Duration: 113.9ms
+background.js:70 📤 Sending <NmLockState> message to native core <2394045193>
+background.js:70 📥 Received message <NmLockState> from native core <2394045193>. Duration: 3ms
+background.js:70 📤 Sending <NmLockState> message to native core <2847689668>
+background.js:70 📥 Received message <NmLockState> from native core <2847689668>. Duration: 2.6ms
+background.js:70 📤 Sending <NmRequestAccounts> message to native core <2878632620>
+background.js:70 📥 Received message <NmRequestAccounts> from native core <2878632620>. Duration: 1.8ms
+background.js:70 📤 Sending <NmRequestDelegatedSession> message to native core <2532363822>
+background.js:70 Unable to get BO features for account undefined. CTX is undefined.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 📥 Received message <NmRequestDelegatedSession> from native core <2532363822>. Duration: 105.6ms
+background.js:70 We successfully unlocked 0 account(s) from a Desktop app with 1 unlocked and 0 locked account(s).
+background.js:70 📥 Sync started for account J4JE2X5X6VAW5BWGE3UUOFLZ2Q - syncing all
+background.js:70 📤 Sending <NmLockState> message to native core <1955927585>
+background.js:70 [LM] Started Desktop Lock Monitor at 1766768676822 (Connected to desktop app).
+background.js:70 📥 Received message <NmLockState> from native core <1955927585>. Duration: 10.4ms
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <4216600009>
+3background.js:70 Could not collect providers from all frames that were initially found.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 📥 Received message <NmOfflineStatus> from native core <4216600009>. Duration: 5.9ms
+background.js:70 📥 Sync started for account J4JE2X5X6VAW5BWGE3UUOFLZ2Q - syncing all
+background.js:70 Managed Apps - Feature flag is NOT enabled
+background.js:70 ✅ Sync completed for account J4JE2X5X6VAW5BWGE3UUOFLZ2Q - took 297ms
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <4063241271>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <4063241271>. Duration: 1.7ms
+background.js:70 Managed Apps - Feature flag is NOT enabled
+background.js:70 ✅ Sync completed for account J4JE2X5X6VAW5BWGE3UUOFLZ2Q - took 342ms
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <3180072726>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <3180072726>. Duration: 1.9ms
+background.js:70 📤 Sending <NmLockState> message to native core <14937107>
+background.js:70 📥 Received message <NmLockState> from native core <14937107>. Duration: 10.5ms
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+4background.js:70 [OP] Locked at Fri Dec 26 2025 12:04:51 GMT-0500 (Eastern Standard Time)
+background.js:70 [LM] Lock monitor alarm cleared
+background.js:70 [LM] Stopped.
+background.js:70 [LM] Lock monitor stopped, without clearing alarm. 🚨
+(anonymous) @ background.js:70Understand this error
+background.js:70 [LM] Stopped.
+background.js:70 [LM] Lock monitor stopped, without clearing alarm. 🚨
+(anonymous) @ background.js:70Understand this error
+background.js:70 [LM] Stopped.
+background.js:70 [LM] Lock monitor stopped, without clearing alarm. 🚨
+(anonymous) @ background.js:70Understand this error
+background.js:70 [LM] Stopped.
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:04:51 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:04:51 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:04:51 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:04:51 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:06:06 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:06:07 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:06:07 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:06:07 GMT-0500 (Eastern Standard Time)
+5background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+3background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+7background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:38 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:38 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:47 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:47 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:47 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:29:47 GMT-0500 (Eastern Standard Time)
+3background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:42:50 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:42:50 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:42:50 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:42:51 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:42:51 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:42:51 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:42:51 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:42:51 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:57:58 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:57:58 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:57:58 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 12:57:58 GMT-0500 (Eastern Standard Time)
+2background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 13:26:26 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 13:26:26 GMT-0500 (Eastern Standard Time)
+8background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+4background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+3background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+2background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Unable to inject for a URL (redacted)
+(anonymous) @ background.js:70Understand this warning
+18background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+background.js:70 [Autosave] Start handling submit event
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <1001016883>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <1001016883>. Duration: 26.2ms
+background.js:70 Could not get default saving location, resetting location.
+(anonymous) @ background.js:70Understand this error
+2background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Autosave] Start handling submit event
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+2background.js:70 Could not complete _handleGetCredential: missing-public-key
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 13:53:25 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 13:53:25 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 13:53:25 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 13:53:25 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 13:53:25 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 13:53:25 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 13:53:25 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 13:53:25 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:01:16 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:01:16 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:01:16 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:01:16 GMT-0500 (Eastern Standard Time)
+11background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Could not complete _handleGetCredential: missing-public-key
+(anonymous) @ background.js:70Understand this warning
+3background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 [Sign in with] Session transitioned from * -> Pending after detecting provider from redirect
+background.js:70 Session does not exist for 1008930550, skipping event.
+(anonymous) @ background.js:70Understand this warning
+2background.js:70 [Sign in with] Sign in with session Pending -> Pending after inner provider navigation.
+background.js:70 [Sign in with] Sign in with session Pending -> Finished after returning to initiators domain.
+background.js:70 Session does not exist for 1008930550, skipping event.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Sign in with] Session transitioned from * -> Pending after detecting provider from redirect
+background.js:70 Session does not exist for 1008930558, skipping event.
+(anonymous) @ background.js:70Understand this warning
+2background.js:70 [Sign in with] Sign in with session Pending -> Pending after inner provider navigation.
+background.js:70 [Sign in with] Sign in with session Pending -> Finished after returning to initiators domain.
+background.js:70 Session does not exist for 1008930558, skipping event.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:37 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:47 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:47 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:47 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:47 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:54 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 14:43:54 GMT-0500 (Eastern Standard Time)
+12background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 16:28:14 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 16:28:14 GMT-0500 (Eastern Standard Time)
+background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+Unchecked runtime.lastError: Tabs cannot be edited right now (user may be dragging a tab).Understand this error
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+3background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+3background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:27 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:27 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:27 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:27 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:27 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:27 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:28 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:28 GMT-0500 (Eastern Standard Time)
+background.js:1 Uncaught (in promise) Failed to update context menu Cannot find menu item with id tabToggleExclusionUnderstand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:42 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:42 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:42 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 18:32:42 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:01:21 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:01:21 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:01:23 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:01:23 GMT-0500 (Eastern Standard Time)
+2background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+6background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Autosave] Start handling submit event
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <1938310526>
+background.js:70 [Autosave] Start handling submit event
+background.js:70 📥 Received message <NmOfflineStatus> from native core <1938310526>. Duration: 27.9ms
+background.js:70 Could not get default saving location, resetting location.
+(anonymous) @ background.js:70Understand this error
+2background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Autosave] Start handling submit event
+2background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+3background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Autosave] Start handling submit event
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <3115578005>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <3115578005>. Duration: 7.4ms
+background.js:70 Could not get default saving location, resetting location.
+(anonymous) @ background.js:70Understand this error
+2background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+5background.js:70 [Autosave] Start handling submit event
+3background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Autosave] Start handling submit event
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <1903201288>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <1903201288>. Duration: 10.7ms
+background.js:70 Could not get default saving location, resetting location.
+(anonymous) @ background.js:70Understand this error
+2background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Autosave] Start handling submit event
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <666305047>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <666305047>. Duration: 30ms
+background.js:70 Could not get default saving location, resetting location.
+(anonymous) @ background.js:70Understand this error
+5background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Autosave] Start handling submit event
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <2194507601>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <2194507601>. Duration: 24.9ms
+background.js:70 Could not get default saving location, resetting location.
+(anonymous) @ background.js:70Understand this error
+2background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Autosave] Start handling submit event
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <4085544950>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <4085544950>. Duration: 18.1ms
+background.js:70 Could not get default saving location, resetting location.
+(anonymous) @ background.js:70Understand this error
+5background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+2background.js:70 [Autosave] Start handling submit event
+2background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70
+wq.sendServerEvent.BR.leading @ background.js:63Understand this error
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <3871272894>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <3871272894>. Duration: 10.5ms
+background.js:70 Could not get default saving location, resetting location.
+(anonymous) @ background.js:70Understand this error
+2background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+4background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:53:55 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:53:55 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:53:55 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:53:55 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:53:56 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:53:56 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:54:05 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:54:05 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:54:05 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:54:05 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:54:35 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 19:54:35 GMT-0500 (Eastern Standard Time)
+background.js:70 Failed to refresh keysets <redacted>
+(anonymous) @ background.js:70Understand this error
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <2443002462>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <2443002462>. Duration: 8.2ms
+background.js:70 Could not get default saving location, resetting location.
+(anonymous) @ background.js:70Understand this error
+2background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 20:25:32 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 20:25:32 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 20:25:32 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 20:25:32 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 20:25:32 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 20:25:32 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 20:25:42 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 20:25:42 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 20:25:42 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 20:25:42 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:04:44 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:04:44 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:04:44 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:04:44 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:04:44 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:04:44 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:04:54 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:04:54 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:04:54 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:04:54 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Modern Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:19:06 GMT-0500 (Eastern Standard Time)
+background.js:70 Received Legacy Notification:<LockStateChanged> from the native core
+background.js:70 [OP] Locked at Fri Dec 26 2025 21:19:07 GMT-0500 (Eastern Standard Time)
+3background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Autosave] Start handling submit event
+background.js:70 📤 Sending <NmOfflineStatus> message to native core <2295894805>
+background.js:70 📥 Received message <NmOfflineStatus> from native core <2295894805>. Duration: 26.2ms
+background.js:70 Could not get default saving location, resetting location.
+(anonymous) @ background.js:70Understand this error
+2background.js:70 The item cache has not been initialized yet.
+(anonymous) @ background.js:70Understand this warning
+background.js:70 [Autosave] Start handling submit event
+background.js:70 Exception while handling request <get-nested-frame-configuration>: NoRelayedListener
+(anonymous) @ background.js:70Understand this error
+ Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+ Ledger: Object

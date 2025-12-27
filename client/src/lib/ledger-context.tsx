@@ -5,6 +5,7 @@ import { AppClient, DefaultWalletPolicy, WalletPolicy } from "ledger-bitcoin";
 import { listen } from "@ledgerhq/logs";
 import { Buffer } from 'buffer';
 import * as bitcoin from 'bitcoinjs-lib';
+import { HDKey } from '@scure/bip32';
 
 listen((log) => console.log("Ledger:", log));
 
@@ -295,6 +296,12 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     // Create PSBT
     const psbt = new bitcoin.Psbt({ network: bitcoin.networks.bitcoin });
     
+    // Parse xpub to get account-level public key using @scure/bip32 (pure JS, no WASM)
+    const accountNode = HDKey.fromExtendedKey(xpub);
+    
+    // Convert master fingerprint from hex string to Buffer
+    const fingerprintBuffer = Buffer.from(masterFingerprint, 'hex');
+    
     // Fetch raw transactions for inputs and add to PSBT
     for (const utxo of selectedUtxos) {
       const txHexResponse = await fetch(`/api/tx/${utxo.txid}/hex`);
@@ -304,14 +311,29 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       const prevTx = bitcoin.Transaction.fromHex(hex);
       const prevOutput = prevTx.outs[utxo.vout];
       
-      // For SegWit inputs (bc1 addresses), use witnessUtxo only
+      // Derive the public key for this address
+      // change = 0 for receive addresses, addressIndex from UTXO
+      const addressIndex = utxo.addressIndex ?? 0;
+      const change = utxo.change ?? 0;
+      const childNode = accountNode.deriveChild(change).deriveChild(addressIndex);
+      
+      if (!childNode.publicKey) {
+        throw new Error("Failed to derive public key for input");
+      }
+      
+      // For SegWit inputs (bc1 addresses), use witnessUtxo and bip32Derivation
       psbt.addInput({
         hash: utxo.txid,
         index: utxo.vout,
         witnessUtxo: {
           script: prevOutput.script,
           value: BigInt(prevOutput.value)
-        }
+        },
+        bip32Derivation: [{
+          masterFingerprint: fingerprintBuffer,
+          pubkey: Buffer.from(childNode.publicKey),
+          path: `m/84'/0'/0'/${change}/${addressIndex}`
+        }]
       });
     }
     
