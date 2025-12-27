@@ -98,7 +98,8 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       setAppClient(app);
       
       const fpr = await app.getMasterFingerprint();
-      const fingerprint = Buffer.from(fpr).toString("hex");
+      // getMasterFingerprint returns a Buffer, convert to hex string
+      const fingerprint = fpr instanceof Buffer ? fpr.toString("hex") : Buffer.from(fpr as any).toString("hex");
       setMasterFingerprint(fingerprint);
       
       const extPubKey = await app.getExtendedPubkey("m/84'/0'/0'");
