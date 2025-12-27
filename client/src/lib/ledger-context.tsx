@@ -23,6 +23,8 @@ interface LedgerContextType {
   btcBalance: number;
   btcPrice: number;
   address: string;
+  receiveAddress: string;
+  receiveAddressIndex: number;
   addresses: string[];
   transactions: Transaction[];
   deviceName: string;
@@ -31,7 +33,7 @@ interface LedgerContextType {
   sendBitcoin: (amount: number, to: string) => Promise<string>;
   signMessage: (message: string, addressIndex?: number) => Promise<string>;
   refreshBalance: () => Promise<void>;
-  verifyAddressOnDevice: () => Promise<void>;
+  verifyAddressOnDevice: (addressIndex?: number) => Promise<void>;
   generateMoreAddresses: () => Promise<void>;
 }
 
@@ -51,6 +53,9 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
   const [keepAliveInterval, setKeepAliveInterval] = useState<NodeJS.Timeout | null>(null);
   const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
   const [deviceName, setDeviceName] = useState<string>("Ledger");
+  const [usedAddresses, setUsedAddresses] = useState<Set<string>>(new Set());
+  const [receiveAddress, setReceiveAddress] = useState<string>("");
+  const [receiveAddressIndex, setReceiveAddressIndex] = useState<number>(0);
 
   useEffect(() => {
     const fetchPrice = async () => {
@@ -118,6 +123,8 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       
       setAddresses(derivedAddresses);
       setAddress(derivedAddresses[0]);
+      setReceiveAddress(derivedAddresses[0]);
+      setReceiveAddressIndex(0);
       setStatus('connected');
       
       // Start keep-alive ping every 15 seconds to prevent device sleep
@@ -198,6 +205,9 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     setMasterFingerprint("");
     setXpub("");
     setDeviceName("Ledger");
+    setUsedAddresses(new Set());
+    setReceiveAddress("");
+    setReceiveAddressIndex(0);
     toast({
       title: "Ledger Disconnected",
       description: "Device safely disconnected.",
@@ -255,15 +265,41 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     try {
       // Fetch balances for all derived addresses
       const allData = await Promise.all(
-        addresses.map(async (addr) => {
+        addresses.map(async (addr, index) => {
           const response = await fetch(`/api/address/${addr}`);
-          return response.json();
+          const data = await response.json();
+          return { ...data, addr, index };
         })
       );
       
       // Aggregate total balance across all addresses
       const totalBalance = allData.reduce((sum, data) => sum + (data.balance || 0), 0);
       setBtcBalance(totalBalance);
+      
+      // Track which addresses have received funds (mark as used)
+      const used = new Set<string>();
+      allData.forEach((data) => {
+        if (data.transactions && data.transactions.length > 0) {
+          used.add(data.addr);
+        }
+      });
+      setUsedAddresses(used);
+      
+      // Find the first unused address for receiving
+      let unusedIndex = addresses.findIndex(addr => !used.has(addr));
+      
+      // If all addresses are used, we need to generate more
+      if (unusedIndex === -1) {
+        // For now, use the last address but flag that more are needed
+        unusedIndex = addresses.length - 1;
+        // Auto-generate more addresses if all are used
+        if (appClient && masterFingerprint && xpub) {
+          generateMoreAddressesInternal();
+        }
+      }
+      
+      setReceiveAddress(addresses[unusedIndex]);
+      setReceiveAddressIndex(unusedIndex);
       
       // Combine and sort all transactions by date
       const allTransactions = allData
@@ -285,8 +321,43 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       });
     }
   };
+  
+  const generateMoreAddressesInternal = async () => {
+    if (!appClient) return;
+    
+    try {
+      const policy = new DefaultWalletPolicy(
+        "wpkh(@0/**)",
+        `[${masterFingerprint}/84'/0'/0']${xpub}`
+      );
+      
+      const startIndex = addresses.length;
+      const newAddresses: string[] = [];
+      
+      for (let i = startIndex; i < startIndex + 5; i++) {
+        const addr = await appClient.getWalletAddress(
+          policy,
+          null,
+          0,
+          i,
+          false
+        );
+        newAddresses.push(addr);
+      }
+      
+      setAddresses(prev => [...prev, ...newAddresses]);
+      
+      // Set the first new address as receive address if all previous were used
+      if (newAddresses.length > 0 && !receiveAddress) {
+        setReceiveAddress(newAddresses[0]);
+        setReceiveAddressIndex(startIndex);
+      }
+    } catch (e: any) {
+      console.error("Failed to auto-generate addresses", e);
+    }
+  };
 
-  const verifyAddressOnDevice = async () => {
+  const verifyAddressOnDevice = async (addressIndex: number = 0) => {
     if (!appClient || status !== 'connected') throw new Error("Device not connected");
     
     toast({
@@ -304,7 +375,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
         policy,
         null,
         0,
-        0,
+        addressIndex,
         true
       );
       
@@ -370,6 +441,8 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       btcBalance,
       btcPrice,
       address,
+      receiveAddress,
+      receiveAddressIndex,
       addresses,
       transactions,
       deviceName,
