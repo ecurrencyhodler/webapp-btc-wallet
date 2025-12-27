@@ -197,5 +197,93 @@ export async function registerRoutes(
     }
   });
 
+  // Get UTXOs for addresses
+  app.post("/api/utxos", async (req, res) => {
+    try {
+      const { addresses } = req.body;
+      
+      if (!addresses || !Array.isArray(addresses)) {
+        res.status(400).json({ error: "Addresses array required" });
+        return;
+      }
+      
+      const allUtxos: any[] = [];
+      
+      for (const address of addresses) {
+        try {
+          const response = await fetch(`https://blockstream.info/api/address/${address}/utxo`);
+          if (response.ok) {
+            const utxos = await response.json();
+            // Add address index info to each UTXO
+            const addressIndex = addresses.indexOf(address);
+            for (const utxo of utxos) {
+              allUtxos.push({
+                ...utxo,
+                address,
+                addressIndex
+              });
+            }
+          }
+        } catch (err) {
+          console.log(`Failed to fetch UTXOs for ${address}`);
+        }
+      }
+      
+      res.json({ utxos: allUtxos });
+    } catch (error) {
+      console.error("Error fetching UTXOs:", error);
+      res.status(500).json({ error: "Failed to fetch UTXOs" });
+    }
+  });
+
+  // Get raw transaction hex for PSBT input
+  app.get("/api/tx/:txid/hex", async (req, res) => {
+    try {
+      const { txid } = req.params;
+      const response = await fetch(`https://blockstream.info/api/tx/${txid}/hex`);
+      
+      if (!response.ok) {
+        res.status(404).json({ error: "Transaction not found" });
+        return;
+      }
+      
+      const hex = await response.text();
+      res.json({ hex });
+    } catch (error) {
+      console.error("Error fetching transaction:", error);
+      res.status(500).json({ error: "Failed to fetch transaction" });
+    }
+  });
+
+  // Broadcast signed transaction
+  app.post("/api/broadcast", async (req, res) => {
+    try {
+      const { txHex } = req.body;
+      
+      if (!txHex) {
+        res.status(400).json({ error: "Transaction hex required" });
+        return;
+      }
+      
+      const response = await fetch("https://blockstream.info/api/tx", {
+        method: "POST",
+        body: txHex,
+        headers: { "Content-Type": "text/plain" }
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        res.status(400).json({ error: errorText || "Broadcast failed" });
+        return;
+      }
+      
+      const txid = await response.text();
+      res.json({ txid });
+    } catch (error) {
+      console.error("Error broadcasting transaction:", error);
+      res.status(500).json({ error: "Failed to broadcast transaction" });
+    }
+  });
+
   return httpServer;
 }

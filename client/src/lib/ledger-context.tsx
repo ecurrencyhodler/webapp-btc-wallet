@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from '@/hooks/use-toast';
 import TransportWebHID from "@ledgerhq/hw-transport-webhid";
-import { AppClient, DefaultWalletPolicy } from "ledger-bitcoin";
+import { AppClient, DefaultWalletPolicy, WalletPolicy } from "ledger-bitcoin";
 import { listen } from "@ledgerhq/logs";
 import { Buffer } from 'buffer';
+import * as bitcoin from 'bitcoinjs-lib';
 
 listen((log) => console.log("Ledger:", log));
 
@@ -30,7 +31,7 @@ interface LedgerContextType {
   deviceName: string;
   connect: () => Promise<void>;
   disconnect: () => void;
-  sendBitcoin: (amount: number, to: string) => Promise<string>;
+  sendBitcoin: (amount: number, to: string, feeRate: number) => Promise<string>;
   signMessage: (message: string, addressIndex?: number) => Promise<string>;
   refreshBalance: () => Promise<void>;
   verifyAddressOnDevice: (addressIndex?: number) => Promise<void>;
@@ -97,7 +98,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       setAppClient(app);
       
       const fpr = await app.getMasterFingerprint();
-      const fingerprint = fpr.toString("hex");
+      const fingerprint = Buffer.from(fpr).toString("hex");
       setMasterFingerprint(fingerprint);
       
       const extPubKey = await app.getExtendedPubkey("m/84'/0'/0'");
@@ -127,15 +128,20 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       setReceiveAddressIndex(0);
       setStatus('connected');
       
-      // Start keep-alive ping every 15 seconds to prevent device sleep
+      // Start keep-alive ping every 10 seconds to prevent device sleep
       const interval = setInterval(async () => {
         try {
-          // Get master fingerprint as a lightweight ping
+          // Get master fingerprint as a lightweight ping to keep Bitcoin app active
           await app.getMasterFingerprint();
-        } catch (err) {
-          console.log("Keep-alive ping failed, device may have disconnected");
+          console.log("Keep-alive ping successful");
+        } catch (err: any) {
+          console.log("Keep-alive ping failed:", err?.message);
+          // If the device disconnects, clean up
+          if (err?.message?.includes("DISCONNECTED") || err?.name === "DisconnectedDeviceDuringOperation") {
+            disconnect();
+          }
         }
-      }, 15000);
+      }, 10000);
       setKeepAliveInterval(interval);
       
       // Request wake lock to prevent system sleep
@@ -214,28 +220,162 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const sendBitcoin = async (amount: number, to: string) => {
-    if (!transport || status !== 'connected') throw new Error("Device not connected");
+  const sendBitcoin = async (amount: number, to: string, feeRate: number = 10) => {
+    if (!appClient || !transport || status !== 'connected') throw new Error("Device not connected");
     if (amount > btcBalance) throw new Error("Insufficient funds");
+    
+    const amountSats = Math.round(amount * 100000000);
+    
+    // Fetch UTXOs
+    toast({
+      title: "Preparing Transaction",
+      description: "Fetching available funds...",
+    });
+    
+    const utxoResponse = await fetch('/api/utxos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ addresses })
+    });
+    
+    if (!utxoResponse.ok) {
+      throw new Error("Failed to fetch UTXOs");
+    }
+    
+    const { utxos } = await utxoResponse.json();
+    
+    if (!utxos || utxos.length === 0) {
+      throw new Error("No available funds found");
+    }
+    
+    // Sort UTXOs by value (largest first) and select enough for amount + fee
+    utxos.sort((a: any, b: any) => b.value - a.value);
+    
+    const selectedUtxos: any[] = [];
+    let totalInput = 0;
+    const estimatedTxSize = 140 + (utxos.length * 68); // Rough estimate for SegWit
+    const estimatedFee = feeRate * estimatedTxSize;
+    const targetAmount = amountSats + estimatedFee;
+    
+    for (const utxo of utxos) {
+      selectedUtxos.push(utxo);
+      totalInput += utxo.value;
+      if (totalInput >= targetAmount) break;
+    }
+    
+    if (totalInput < targetAmount) {
+      throw new Error("Insufficient funds including fee");
+    }
+    
+    // Calculate actual fee and change
+    const actualTxSize = 10 + (selectedUtxos.length * 68) + 31 + (totalInput > targetAmount ? 31 : 0);
+    const actualFee = feeRate * actualTxSize;
+    const change = totalInput - amountSats - actualFee;
+    
+    // Create PSBT
+    const psbt = new bitcoin.Psbt({ network: bitcoin.networks.bitcoin });
+    
+    // Fetch raw transactions for inputs and add to PSBT
+    for (const utxo of selectedUtxos) {
+      const txHexResponse = await fetch(`/api/tx/${utxo.txid}/hex`);
+      const { hex } = await txHexResponse.json();
+      
+      psbt.addInput({
+        hash: utxo.txid,
+        index: utxo.vout,
+        witnessUtxo: {
+          script: bitcoin.address.toOutputScript(utxo.address, bitcoin.networks.bitcoin),
+          value: BigInt(utxo.value)
+        },
+        bip32Derivation: [{
+          masterFingerprint: Buffer.from(masterFingerprint, 'hex'),
+          path: `m/84'/0'/0'/0/${utxo.addressIndex}`,
+          pubkey: Buffer.alloc(33) // Placeholder - Ledger will provide this
+        }]
+      });
+    }
+    
+    // Add recipient output
+    psbt.addOutput({
+      address: to,
+      value: BigInt(amountSats)
+    });
+    
+    // Add change output if needed
+    if (change > 546) { // Dust threshold
+      const changeAddress = addresses[0]; // Use first address for change
+      psbt.addOutput({
+        address: changeAddress,
+        value: BigInt(Math.floor(change))
+      });
+    }
+    
+    // Convert to base64 for Ledger
+    const psbtBase64 = psbt.toBase64();
     
     toast({
       title: "Confirm on Device",
       description: "Please review and approve the transaction on your Ledger.",
     });
-
-    await new Promise(resolve => setTimeout(resolve, 3000));
     
-    setBtcBalance(prev => prev - amount);
-    setTransactions(prev => [{
-      id: `tx-${Date.now()}`,
-      type: 'sent',
-      amount,
-      date: new Date(),
-      address: to,
-      status: 'pending'
-    }, ...prev]);
-    
-    return "tx_hash_simulated_" + Math.random().toString(36).substring(7);
+    try {
+      // Create wallet policy for signing
+      const policy = new DefaultWalletPolicy(
+        "wpkh(@0/**)",
+        `[${masterFingerprint}/84'/0'/0']${xpub}`
+      );
+      
+      // Sign with Ledger - returns [psbt, signatures] tuple
+      const signResult = await appClient.signPsbt(
+        psbtBase64,
+        policy,
+        null
+      );
+      
+      // Parse signed PSBT and finalize
+      const signedPsbt = bitcoin.Psbt.fromBase64(signResult[0] as unknown as string);
+      signedPsbt.finalizeAllInputs();
+      
+      // Extract and broadcast
+      const txHex = signedPsbt.extractTransaction().toHex();
+      
+      toast({
+        title: "Broadcasting",
+        description: "Sending transaction to network...",
+      });
+      
+      const broadcastResponse = await fetch('/api/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ txHex })
+      });
+      
+      if (!broadcastResponse.ok) {
+        const error = await broadcastResponse.json();
+        throw new Error(error.error || "Broadcast failed");
+      }
+      
+      const { txid } = await broadcastResponse.json();
+      
+      // Update local state
+      setBtcBalance(prev => prev - amount - (actualFee / 100000000));
+      setTransactions(prev => [{
+        id: txid,
+        type: 'sent',
+        amount,
+        date: new Date(),
+        address: to,
+        status: 'pending'
+      }, ...prev]);
+      
+      return txid;
+    } catch (e: any) {
+      console.error("Transaction failed:", e);
+      if (e.message?.includes("denied") || e.message?.includes("rejected")) {
+        throw new Error("Transaction rejected on device");
+      }
+      throw new Error(e.message || "Transaction signing failed");
+    }
   };
 
   const signMessage = async (message: string, addressIndex: number = 0) => {

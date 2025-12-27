@@ -51,7 +51,7 @@ export default function SendPage() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSigning(true);
     try {
-      const hash = await sendBitcoin(Number(values.amount), values.address);
+      const hash = await sendBitcoin(Number(values.amount), values.address, feeRate);
       setTxHash(hash);
       toast({
         title: "Transaction Broadcasted",
