@@ -300,11 +300,16 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       const txHexResponse = await fetch(`/api/tx/${utxo.txid}/hex`);
       const { hex } = await txHexResponse.json();
       
+      // Parse the previous transaction
+      const prevTx = bitcoin.Transaction.fromHex(hex);
+      
       psbt.addInput({
         hash: utxo.txid,
         index: utxo.vout,
+        // Include both nonWitnessUtxo and witnessUtxo for maximum compatibility
+        nonWitnessUtxo: Buffer.from(hex, 'hex'),
         witnessUtxo: {
-          script: bitcoin.address.toOutputScript(utxo.address, bitcoin.networks.bitcoin),
+          script: prevTx.outs[utxo.vout].script,
           value: BigInt(utxo.value)
         }
       });
