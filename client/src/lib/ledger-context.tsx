@@ -261,22 +261,34 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
     
     const selectedUtxos: any[] = [];
     let totalInput = 0;
-    const estimatedTxSize = 140 + (utxos.length * 68); // Rough estimate for SegWit
-    const estimatedFee = feeRate * estimatedTxSize;
-    const targetAmount = amountSats + estimatedFee;
     
+    // Select UTXOs greedily, recalculating fee as we add inputs
     for (const utxo of utxos) {
       selectedUtxos.push(utxo);
       totalInput += utxo.value;
-      if (totalInput >= targetAmount) break;
+      
+      // Calculate fee based on current selection (68 vbytes per input, ~31 per output)
+      const inputSize = selectedUtxos.length * 68;
+      const outputSize = 31 + 31; // recipient + possible change
+      const overheadSize = 10; // tx overhead
+      const currentTxSize = overheadSize + inputSize + outputSize;
+      const currentFee = feeRate * currentTxSize;
+      
+      if (totalInput >= amountSats + currentFee) break;
     }
     
-    if (totalInput < targetAmount) {
-      throw new Error("Insufficient funds including fee");
+    // Final fee calculation
+    const finalTxSize = 10 + (selectedUtxos.length * 68) + 31 + 31;
+    const estimatedFee = feeRate * finalTxSize;
+    
+    if (totalInput < amountSats + estimatedFee) {
+      const maxSendable = totalInput - estimatedFee;
+      throw new Error(`Insufficient funds. Max sendable: ${(maxSendable / 100000000).toFixed(8)} BTC`);
     }
     
     // Calculate actual fee and change
-    const actualTxSize = 10 + (selectedUtxos.length * 68) + 31 + (totalInput > targetAmount ? 31 : 0);
+    const hasChange = totalInput > amountSats + estimatedFee + 546; // 546 is dust threshold
+    const actualTxSize = 10 + (selectedUtxos.length * 68) + 31 + (hasChange ? 31 : 0);
     const actualFee = feeRate * actualTxSize;
     const change = totalInput - amountSats - actualFee;
     
