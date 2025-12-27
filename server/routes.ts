@@ -7,17 +7,57 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Get Bitcoin price in USD from CoinGecko (no API key required)
+  // Get Bitcoin price in USD - try multiple sources
+  let cachedPrice = 87000; // Fallback price
+  let lastPriceUpdate = 0;
+  
   app.get("/api/btc-price", async (req, res) => {
+    const now = Date.now();
+    
+    // Use cached price if updated within last 30 seconds
+    if (now - lastPriceUpdate < 30000 && cachedPrice > 0) {
+      res.json({ price: cachedPrice });
+      return;
+    }
+    
     try {
+      // Try CoinGecko first
       const response = await fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
+        { signal: AbortSignal.timeout(5000) }
       );
       const data = await response.json();
-      res.json({ price: data.bitcoin.usd });
+      
+      if (data?.bitcoin?.usd) {
+        cachedPrice = data.bitcoin.usd;
+        lastPriceUpdate = now;
+        res.json({ price: cachedPrice });
+        return;
+      }
+      
+      throw new Error("Invalid response format");
     } catch (error) {
+      // Try Blockchain.info as fallback
+      try {
+        const fallbackResponse = await fetch(
+          "https://blockchain.info/ticker",
+          { signal: AbortSignal.timeout(5000) }
+        );
+        const fallbackData = await fallbackResponse.json();
+        
+        if (fallbackData?.USD?.last) {
+          cachedPrice = fallbackData.USD.last;
+          lastPriceUpdate = now;
+          res.json({ price: cachedPrice });
+          return;
+        }
+      } catch (fallbackError) {
+        console.error("Fallback price fetch failed:", fallbackError);
+      }
+      
+      // Return cached price as last resort
       console.error("Error fetching BTC price:", error);
-      res.status(500).json({ error: "Failed to fetch Bitcoin price" });
+      res.json({ price: cachedPrice });
     }
   });
 
