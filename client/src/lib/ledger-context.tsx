@@ -342,13 +342,20 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
         `[${masterFingerprint}/84'/0'/0']${xpub}`
       );
       
+      const psbtBase64 = psbt.toBase64();
+      console.log("PSBT Base64:", psbtBase64);
+      console.log("Master fingerprint:", masterFingerprint);
+      console.log("Xpub:", xpub);
+      
       // Sign with Ledger - pass base64 PSBT
       // signPsbt returns [[inputIndex, { pubkey, signature }], ...]
       const signatures = await appClient.signPsbt(
-        psbt.toBase64(),
+        psbtBase64,
         policy,
         null
       );
+      
+      console.log("Signatures received:", signatures.length);
       
       // Apply signatures to PSBT
       for (const [inputIndex, partialSig] of signatures) {
