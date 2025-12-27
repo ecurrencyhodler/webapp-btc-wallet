@@ -300,17 +300,17 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       const txHexResponse = await fetch(`/api/tx/${utxo.txid}/hex`);
       const { hex } = await txHexResponse.json();
       
-      // Parse the previous transaction
+      // Parse the previous transaction to get the output script
       const prevTx = bitcoin.Transaction.fromHex(hex);
+      const prevOutput = prevTx.outs[utxo.vout];
       
+      // For SegWit inputs (bc1 addresses), use witnessUtxo only
       psbt.addInput({
         hash: utxo.txid,
         index: utxo.vout,
-        // Include both nonWitnessUtxo and witnessUtxo for maximum compatibility
-        nonWitnessUtxo: Buffer.from(hex, 'hex'),
         witnessUtxo: {
-          script: prevTx.outs[utxo.vout].script,
-          value: BigInt(utxo.value)
+          script: prevOutput.script,
+          value: BigInt(prevOutput.value)
         }
       });
     }
@@ -330,8 +330,8 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       });
     }
     
-    // Convert to base64 for Ledger
-    const psbtBase64 = psbt.toBase64();
+    // Convert to Buffer for Ledger (not base64)
+    const psbtBuffer = psbt.toBuffer();
     
     toast({
       title: "Confirm on Device",
@@ -345,15 +345,17 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
         `[${masterFingerprint}/84'/0'/0']${xpub}`
       );
       
-      // Sign with Ledger - returns [psbt, signatures] tuple
+      // Sign with Ledger - pass buffer and input indexes
       const signResult = await appClient.signPsbt(
-        psbtBase64,
+        psbtBuffer,
         policy,
         null
       );
       
       // Parse signed PSBT and finalize
-      const signedPsbt = bitcoin.Psbt.fromBase64(signResult[0] as unknown as string);
+      // signResult is [signedPsbtBuffer, signatures]
+      const signedPsbtBuffer = signResult[0] as Buffer;
+      const signedPsbt = bitcoin.Psbt.fromBuffer(signedPsbtBuffer);
       signedPsbt.finalizeAllInputs();
       
       // Extract and broadcast
