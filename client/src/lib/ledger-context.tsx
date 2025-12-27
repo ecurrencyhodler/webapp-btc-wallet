@@ -330,9 +330,6 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
       });
     }
     
-    // Convert to Buffer for Ledger (not base64)
-    const psbtBuffer = psbt.toBuffer();
-    
     toast({
       title: "Confirm on Device",
       description: "Please review and approve the transaction on your Ledger.",
@@ -345,21 +342,29 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
         `[${masterFingerprint}/84'/0'/0']${xpub}`
       );
       
-      // Sign with Ledger - pass buffer and input indexes
-      const signResult = await appClient.signPsbt(
-        psbtBuffer,
+      // Sign with Ledger - pass base64 PSBT
+      // signPsbt returns [[inputIndex, { pubkey, signature }], ...]
+      const signatures = await appClient.signPsbt(
+        psbt.toBase64(),
         policy,
         null
       );
       
-      // Parse signed PSBT and finalize
-      // signResult is [signedPsbtBuffer, signatures]
-      const signedPsbtBuffer = signResult[0] as Buffer;
-      const signedPsbt = bitcoin.Psbt.fromBuffer(signedPsbtBuffer);
-      signedPsbt.finalizeAllInputs();
+      // Apply signatures to PSBT
+      for (const [inputIndex, partialSig] of signatures) {
+        psbt.updateInput(inputIndex, {
+          partialSig: [{
+            pubkey: partialSig.pubkey,
+            signature: partialSig.signature
+          }]
+        });
+      }
+      
+      // Finalize all inputs
+      psbt.finalizeAllInputs();
       
       // Extract and broadcast
-      const txHex = signedPsbt.extractTransaction().toHex();
+      const txHex = psbt.extractTransaction().toHex();
       
       toast({
         title: "Broadcasting",
