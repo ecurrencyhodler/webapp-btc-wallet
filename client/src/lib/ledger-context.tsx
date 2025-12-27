@@ -306,12 +306,7 @@ export function LedgerProvider({ children }: { children: ReactNode }) {
         witnessUtxo: {
           script: bitcoin.address.toOutputScript(utxo.address, bitcoin.networks.bitcoin),
           value: BigInt(utxo.value)
-        },
-        bip32Derivation: [{
-          masterFingerprint: Buffer.from(masterFingerprint, 'hex'),
-          path: `m/84'/0'/0'/0/${utxo.addressIndex}`,
-          pubkey: Buffer.alloc(33) // Placeholder - Ledger will provide this
-        }]
+        }
       });
     }
     
